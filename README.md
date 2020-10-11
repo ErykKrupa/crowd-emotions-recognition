@@ -1,0 +1,1 @@
+Engineer's Thesis. A Deep Learning model recognises emotions in the pictures of the crowds.
