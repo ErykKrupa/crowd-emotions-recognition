@@ -1,93 +1,103 @@
 \chapter{Projekt systemu}
 \thispagestyle{chapterBeginStyle}
 
-{\color{dgray}
-W tym rozdziale przedstawiono szczegółowy projekt systemy w notacji UML uwzględniający wymagania funkcjonalne opisane w rozdziale~\ref{rozdzial1}. Do opisu relacji pomiędzy składowymi systemu wykorzystano diagramy \ldots.
-Przedstawiono w pseudokodzie i omówiono algorytmy generowania \ldots.
-}
+Tutaj ogólne wprowadzenie w architekturę systemu.
 
+% {\color{dgray}
+% W tym rozdziale przedstawiono szczegółowy projekt systemy w notacji UML uwzględniający wymagania funkcjonalne opisane w rozdziale~\ref{rozdzial1}. Do opisu relacji pomiędzy składowymi systemu wykorzystano diagramy \ldots.
+% Przedstawiono w pseudokodzie i omówiono algorytmy generowania \ldots.
+% }
 
-\section{Grupy użytkowników i założenia}
+\section{Dane}
+Tutaj zostaną przedstawione wszystkie informacje dotyczące bazy danych Group Affect Database, odpowiedź na pytanie dlaczego została wybrana oraz aspekty prawne.
 
-{\color{dgray}
-Architektura systemu \ldots jest wielowarstwowa i rozproszona, przy czym \ldots. Podsystem  \ldots jest systemem zbiorczym dla danych \ldots wysyłanych do serwera \ldots. 
+\section{Model}
+Tutaj zostanie omówiona architektura sieci neuronowej, oraz spróbuję odpowiedzieć na pytanie czemu akurat taka architektura spełnia swoją rolę.
 
-Taka architektura jest zgodna z wzorcem projektowym MVC\footnote{Należy odnieść się do wykorzystywanych wzorców projektowych} (ang.  Model-View-Controller). Przetwarzanie danych odbywa się \ldots.
-} 
+\section{Wyniki}
+Tutaj zostaną przedstawione wyniki (również wydajnościowe) dla testów.
 
-\section{Przypadki użycia i scenariusze}
+% \section{Grupy użytkowników i założenia}
 
-W tej sekcji należy przedstawić przypadki użycia oraz odpowiadające im scenariusze dla poszczególnych grup użytkowników \ldots.
+% {\color{dgray}
+% Architektura systemu \ldots jest wielowarstwowa i rozproszona, przy czym \ldots. Podsystem  \ldots jest systemem zbiorczym dla danych \ldots wysyłanych do serwera \ldots. 
 
-\section{Diagramy klas}
+% Taka architektura jest zgodna z wzorcem projektowym MVC\footnote{Należy odnieść się do wykorzystywanych wzorców projektowych} (ang.  Model-View-Controller). Przetwarzanie danych odbywa się \ldots.
+% } 
 
-W tej sekcji należy przedstawić diagramy klas dla odpowiednich elementów systemu zidentyfikowane na podstawie wcześniejszych rozważań 
+% \section{Przypadki użycia i scenariusze}
 
-\section{Diagramy aktywności}
+% W tej sekcji należy przedstawić przypadki użycia oraz odpowiadające im scenariusze dla poszczególnych grup użytkowników \ldots.
 
-W tej sekcji należy przedstawić diagramy aktywności dla elementów systemu i odpowiednich procesów wynikające z wcześniejszej analizy.  
+% \section{Diagramy klas}
 
-{\color{dgray}
-W niniejszym rozdziale przedstawiono diagramy aktywności \ldots. Diagram na rysunku~\ref{czynnosci_GD} przedstawia \ldots.
-} 
+% W tej sekcji należy przedstawić diagramy klas dla odpowiednich elementów systemu zidentyfikowane na podstawie wcześniejszych rozważań 
 
-\begin{figure}[h!]
-\begin{center}
-\includegraphics[width=0.5\textwidth]{aktyw.pdf}
-\end{center}
-\caption{{\color{dgray}Diagram aktywności związany z procesem rejestracji dokumentu.}} \label{czynnosci_GD}
-\end{figure}  
+% \section{Diagramy aktywności}
 
-\section{Diagramy sekwencji}
+% W tej sekcji należy przedstawić diagramy aktywności dla elementów systemu i odpowiednich procesów wynikające z wcześniejszej analizy.  
 
-W tej sekcji należy przedstawić diagramy sekwencji dla obiektów systemu zidentyfikowanych na podstawie wcześniejszych rozważań. Należy wykorzystać nazewnictwo wprowadzone w poprzednich rozdziałach, w szczególności odpowiadające definicjom wprowadzonych klas.
+% {\color{dgray}
+% W niniejszym rozdziale przedstawiono diagramy aktywności \ldots. Diagram na rysunku~\ref{czynnosci_GD} przedstawia \ldots.
+% } 
 
-\section{Diagramy stanów}
+% \begin{figure}[h!]
+% \begin{center}
+% \includegraphics[width=0.5\textwidth]{aktyw.pdf}
+% \end{center}
+% \caption{{\color{dgray}Diagram aktywności związany z procesem rejestracji dokumentu.}} \label{czynnosci_GD}
+% \end{figure}  
 
-W tej sekcji należy przedstawić diagramy stanów w których może znaleźć się system. Diagramy te są szczególnie istotne przy projektowaniu systemów czasu rzeczywistego. 
+% \section{Diagramy sekwencji}
 
-\section{Projekt bazy danych}
+% W tej sekcji należy przedstawić diagramy sekwencji dla obiektów systemu zidentyfikowanych na podstawie wcześniejszych rozważań. Należy wykorzystać nazewnictwo wprowadzone w poprzednich rozdziałach, w szczególności odpowiadające definicjom wprowadzonych klas.
 
-W tej sekcji należy przedstawić projekt bazy danych. Należy omówić wycinek rzeczywistości i odpowiadające mu zidentyfikowane elementy systemu, których wartości będą podlegać utrwalaniu. Należy przedyskutować wybór typów danych dla atrybutów poszczególnych obiektów. Należy uzasadnić wybór platformy DBMS. Dla relacyjnych baz danych należy przedyskutować jej normalizację.
+% \section{Diagramy stanów}
 
-\section{Opis protokołów}
+% W tej sekcji należy przedstawić diagramy stanów w których może znaleźć się system. Diagramy te są szczególnie istotne przy projektowaniu systemów czasu rzeczywistego. 
 
-W tej sekcji należy omówić protokoły wykorzystywane przez komponenty systemu. Omówić formaty komunikatów i zilustrować je przykładami. 
+% \section{Projekt bazy danych}
 
-\section{Opis algorytmów}
+% W tej sekcji należy przedstawić projekt bazy danych. Należy omówić wycinek rzeczywistości i odpowiadające mu zidentyfikowane elementy systemu, których wartości będą podlegać utrwalaniu. Należy przedyskutować wybór typów danych dla atrybutów poszczególnych obiektów. Należy uzasadnić wybór platformy DBMS. Dla relacyjnych baz danych należy przedyskutować jej normalizację.
 
-W tej sekcji należy wymienić i przedyskutować algorytmy wykorzystywane w systemie. Algorytmy należy przedstawić w pseudokodzie (wykorzystać pakiet \texttt{algorithm2e}). Omówienia poszczególnych kroków algorytmów powinny zawierać odwołania do odpowiednich linii pseudokodu. Dla zaproponowanych autorskich algorytmów należy przeprowadzić analizę ich złożoności czasowej i pamięciowej. 
+% \section{Opis protokołów}
 
-{\color{dgray}
-Algorytm bąblowania jest przedstawiony w Pseudokodzie~\ref{alg:mine}.
-}
+% W tej sekcji należy omówić protokoły wykorzystywane przez komponenty systemu. Omówić formaty komunikatów i zilustrować je przykładami. 
 
-{\small
-\begin{pseudokod}[H]
-%\SetAlTitleFnt{small}
-\SetArgSty{normalfont}
-\SetKwFunction{Process}{Process}
-\SetKwFunction{Calculate}{Calculate}
-\KwIn{Zbiór bąbli $B$}
-\KwOut{Wyporność $W$}
-\ForEach{$b \in B$}{
-\Process{$b$}\;
-\For{$i \leftarrow 1$ \KwTo $|B|$}{
-\If{\Calculate{EW($i$,$b$)} $\le$ 0}{
-$b \leftarrow 2*b$\;
-}
-}
-}
-\While{$B \neq \emptyset$}{
-\For{$j \leftarrow 1$ \KwTo $|B|$}{
-\If{\Calculate{FT($j$,$\hat{b}$)} $\le 0$}{
-$w \leftarrow 2*\hat{b}$\;
-$W \leftarrow W \cup \{w\}$\;
-$B \leftarrow B \setminus \{b\}$\;
-}
-}
-}
-\caption{Wyporność przez bąblowanie}\label{alg:mine}
-\end{pseudokod}
-}
+% \section{Opis algorytmów}
+
+% W tej sekcji należy wymienić i przedyskutować algorytmy wykorzystywane w systemie. Algorytmy należy przedstawić w pseudokodzie (wykorzystać pakiet \texttt{algorithm2e}). Omówienia poszczególnych kroków algorytmów powinny zawierać odwołania do odpowiednich linii pseudokodu. Dla zaproponowanych autorskich algorytmów należy przeprowadzić analizę ich złożoności czasowej i pamięciowej. 
+
+% {\color{dgray}
+% Algorytm bąblowania jest przedstawiony w Pseudokodzie~\ref{alg:mine}.
+% }
+
+% {\small
+% \begin{pseudokod}[H]
+% %\SetAlTitleFnt{small}
+% \SetArgSty{normalfont}
+% \SetKwFunction{Process}{Process}
+% \SetKwFunction{Calculate}{Calculate}
+% \KwIn{Zbiór bąbli $B$}
+% \KwOut{Wyporność $W$}
+% \ForEach{$b \in B$}{
+% \Process{$b$}\;
+% \For{$i \leftarrow 1$ \KwTo $|B|$}{
+% \If{\Calculate{EW($i$,$b$)} $\le$ 0}{
+% $b \leftarrow 2*b$\;
+% }
+% }
+% }
+% \While{$B \neq \emptyset$}{
+% \For{$j \leftarrow 1$ \KwTo $|B|$}{
+% \If{\Calculate{FT($j$,$\hat{b}$)} $\le 0$}{
+% $w \leftarrow 2*\hat{b}$\;
+% $W \leftarrow W \cup \{w\}$\;
+% $B \leftarrow B \setminus \{b\}$\;
+% }
+% }
+% }
+% \caption{Wyporność przez bąblowanie}\label{alg:mine}
+% \end{pseudokod}
+% }
 
