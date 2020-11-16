@@ -1,3 +1,5 @@
 /.idea
 /data
+/models
+/notes.txt
 __pycache__/

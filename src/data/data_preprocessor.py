@@ -13,22 +13,22 @@ _data_generator = ImageDataGenerator(1. / 255)
 
 
 def get_train_generator() -> DirectoryIterator:
-    return _get_generator(DataSet.TRAIN)
+    return _get_generator(DataSet.TRAIN, TRAIN_BATCH_SIZE)
 
 
 def get_validation_generator() -> DirectoryIterator:
-    return _get_generator(DataSet.VALIDATION)
+    return _get_generator(DataSet.VALIDATION, VALIDATION_BATCH_SIZE)
 
 
 # todo
 # def get_test_generator(target_size: int, batch_size: int) -> DirectoryIterator:
 
 
-def _get_generator(data_set: DataSet) -> DirectoryIterator:
+def _get_generator(data_set: DataSet, batch_size: int) -> DirectoryIterator:
     return _data_generator.flow_from_directory(
         _get_path(data_set),
         target_size=PICTURE_SIZE,
-        batch_size=BATCH_SIZE,
+        batch_size=batch_size,
         class_mode='categorical'
     )
 
@@ -59,4 +59,10 @@ def get_all_pictures_metadata(
 def _add_pictures_metadata_to_set(list_: list, data_set: DataSet, emotion: Emotion) -> None:
     path = _get_path(data_set, emotion)
     if isdir(path):
-        list_.extend([PictureMetadata(f, emotion) for f in listdir(path) if isfile(path + f) and f.endswith('.jpg')])
+        list_.extend([PictureMetadata(f, emotion)
+                      for f in listdir(path)
+                      if isfile(path + f) and f.endswith('.jpg')])
+
+
+def get_amount_of_pictures(data_set: DataSet, emotion: Emotion = Emotion.UNSPECIFIED) -> int:
+    return len(get_all_pictures_metadata(data_set, emotion))
