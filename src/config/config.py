@@ -1,4 +1,6 @@
+# files
 DATA_DIRECTORY = 'data/'
+MODELS_DIRECTORY = "models/"
 
 # preprocessing
 PICTURE_SIZE = (150, 150)
@@ -13,3 +15,7 @@ OPTIMIZER_LEARNING_RATE = 1e-4
 
 # model launching
 EPOCHS = 50
+
+# learning visualization
+TRAIN_LINE_STYLE = 'b-'
+VALIDATION_LINE_STYLE = 'g-'

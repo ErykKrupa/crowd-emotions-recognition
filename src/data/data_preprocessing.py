@@ -38,7 +38,7 @@ def _get_path(
         emotion: Emotion = Emotion.UNSPECIFIED,
         file_name: str = ''
 ) -> str:
-    return '../' + DATA_DIRECTORY + data_set.value + '/' \
+    return DATA_DIRECTORY + data_set.value + '/' \
            + (emotion.value + '/' if emotion != Emotion.UNSPECIFIED else '') \
            + file_name
 
