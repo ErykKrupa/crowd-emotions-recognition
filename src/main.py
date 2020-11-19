@@ -1,6 +1,6 @@
 from math import ceil
 
-from config.config import EPOCHS, TRAIN_BATCH_SIZE, VALIDATION_BATCH_SIZE
+from config.config import *
 from data.data_preprocessing import get_amount_of_pictures, get_train_generator, get_validation_generator
 from data.data_set import DataSet
 from model.model import prepare_model

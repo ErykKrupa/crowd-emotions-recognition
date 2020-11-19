@@ -9,23 +9,37 @@ from data.data_set import DataSet
 from data.emotion import Emotion
 from data.picture_metadata import PictureMetadata
 
-_data_generator = ImageDataGenerator(1. / 255)
-
 
 def get_train_generator() -> DirectoryIterator:
-    return _get_generator(DataSet.TRAIN, TRAIN_BATCH_SIZE)
+    data_generator: ImageDataGenerator = ImageDataGenerator(
+        rescale=1. / 255,
+        rotation_range=ROTATION_RANGE,
+        width_shift_range=WIDTH_SHIFT_RANGE,
+        height_shift_range=HEIGHT_SHIFT_RANGE,
+        shear_range=SHEAR_RANGE,
+        zoom_range=ZOOM_RANGE,
+        horizontal_flip=HORIZONTAL_FLIP,
+        vertical_flip=HORIZONTAL_FLIP,
+        fill_mode=FILL_MODE
+    )
+    return _get_generator(data_generator, DataSet.TRAIN, TRAIN_BATCH_SIZE)
 
 
 def get_validation_generator() -> DirectoryIterator:
-    return _get_generator(DataSet.VALIDATION, VALIDATION_BATCH_SIZE)
+    data_generator: ImageDataGenerator = ImageDataGenerator(1. / 255)
+    return _get_generator(data_generator, DataSet.VALIDATION, VALIDATION_BATCH_SIZE)
 
 
 # todo
 # def get_test_generator(target_size: int, batch_size: int) -> DirectoryIterator:
 
 
-def _get_generator(data_set: DataSet, batch_size: int) -> DirectoryIterator:
-    return _data_generator.flow_from_directory(
+def _get_generator(
+        data_generator: ImageDataGenerator,
+        data_set: DataSet,
+        batch_size: int
+) -> DirectoryIterator:
+    return data_generator.flow_from_directory(
         _get_path(data_set),
         target_size=PICTURE_SIZE,
         batch_size=batch_size,

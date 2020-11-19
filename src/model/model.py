@@ -1,5 +1,5 @@
 from keras import models, Model
-from keras.layers import Conv2D, MaxPooling2D, Dense, Flatten
+from keras.layers import *
 from tensorflow_core import optimizers
 
 from config.config import *
@@ -15,8 +15,8 @@ def prepare_model() -> Model:
     model.add(MaxPooling2D(POOL_SIZE))
     model.add(Conv2D(128, KERNEL_SIZE, activation=ACTIVATION))
     model.add(MaxPooling2D(POOL_SIZE))
-
     model.add(Flatten())
+    model.add(Dropout(DROPOUT_RATE))
     model.add(Dense(512, activation=ACTIVATION))
     model.add(Dense(3, activation='softmax'))
 
