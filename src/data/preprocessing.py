@@ -9,10 +9,12 @@ from data.data_set import DataSet
 from data.emotion import Emotion
 from data.picture_metadata import PictureMetadata
 
+RESCALE = 1. / 255
+
 
 def get_train_generator() -> DirectoryIterator:
     data_generator: ImageDataGenerator = ImageDataGenerator(
-        rescale=1. / 255,
+        rescale=RESCALE,
         rotation_range=ROTATION_RANGE,
         width_shift_range=WIDTH_SHIFT_RANGE,
         height_shift_range=HEIGHT_SHIFT_RANGE,
@@ -22,37 +24,37 @@ def get_train_generator() -> DirectoryIterator:
         vertical_flip=HORIZONTAL_FLIP,
         fill_mode=FILL_MODE
     )
-    return _get_generator(data_generator, DataSet.TRAIN, TRAIN_BATCH_SIZE)
+    return _get_generator(DataSet.TRAIN, data_generator)
 
 
 def get_validation_generator() -> DirectoryIterator:
-    data_generator: ImageDataGenerator = ImageDataGenerator(1. / 255)
-    return _get_generator(data_generator, DataSet.VALIDATION, VALIDATION_BATCH_SIZE)
+    return _get_generator(DataSet.VALIDATION)
 
 
 # todo
-# def get_test_generator(target_size: int, batch_size: int) -> DirectoryIterator:
+def get_test_generator() -> DirectoryIterator:
+    pass
 
 
 def _get_generator(
-        data_generator: ImageDataGenerator,
         data_set: DataSet,
-        batch_size: int
+        data_generator: ImageDataGenerator = ImageDataGenerator(RESCALE)
 ) -> DirectoryIterator:
     return data_generator.flow_from_directory(
-        _get_path(data_set),
+        _get_data_path(data_set),
         target_size=PICTURE_SIZE,
-        batch_size=batch_size,
+        batch_size=BATCH_SIZE,
         class_mode='categorical'
     )
 
 
-def _get_path(
+def _get_data_path(
         data_set: DataSet,
         emotion: Emotion = Emotion.UNSPECIFIED,
         file_name: str = ''
 ) -> str:
-    return DATA_DIRECTORY + data_set.value + '/' \
+    return DATA_DIRECTORY + '/' \
+           + data_set.value + '/' \
            + (emotion.value + '/' if emotion != Emotion.UNSPECIFIED else '') \
            + file_name
 
@@ -71,7 +73,7 @@ def get_all_pictures_metadata(
 
 
 def _add_pictures_metadata_to_set(list_: list, data_set: DataSet, emotion: Emotion) -> None:
-    path = _get_path(data_set, emotion)
+    path = _get_data_path(data_set, emotion)
     if isdir(path):
         list_.extend([PictureMetadata(f, emotion)
                       for f in listdir(path)

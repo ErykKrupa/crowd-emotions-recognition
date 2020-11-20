@@ -1,11 +1,12 @@
+from keras.applications import *
+
 # files
-DATA_DIRECTORY = 'data/'
-MODELS_DIRECTORY = "models/"
+DATA_DIRECTORY = 'data'
+MODELS_DIRECTORY = 'models'
+EXTRACTED_DATA_CACHE_DIRECTORY = 'extracted_cache'
 
 # preprocessing
 PICTURE_SIZE = (150, 150)
-TRAIN_BATCH_SIZE = 32
-VALIDATION_BATCH_SIZE = 32
 ROTATION_RANGE = 30
 WIDTH_SHIFT_RANGE = 0.1
 HEIGHT_SHIFT_RANGE = 0.1
@@ -16,15 +17,19 @@ VERTICAL_FLIP = False
 FILL_MODE = 'nearest'
 
 # model construction
+INPUT_SHAPE = PICTURE_SIZE + (3,)
 KERNEL_SIZE = (3, 3)
 POOL_SIZE = (2, 2)
 ACTIVATION = 'relu'
-OPTIMIZER_LEARNING_RATE = 1e-4
-DROPOUT_RATE = 0
+OPTIMIZER_LEARNING_RATE = 2e-5
+DROPOUT_RATE = 0.5
+PRETRAINED_MODEL = VGG16
 
 # model launching
+USE_PRETRAINED_MODEL = True
+BATCH_SIZE = 32
 EPOCHS = 10
 
-# learning visualization
+# learning results visualization
 TRAIN_LINE_STYLE = 'b-'
 VALIDATION_LINE_STYLE = 'g-'
