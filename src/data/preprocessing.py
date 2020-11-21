@@ -5,6 +5,7 @@ from typing import List
 from keras.preprocessing.image import ImageDataGenerator, DirectoryIterator
 
 from config.config import *
+from config.hidden_config import PICTURE_SHAPE
 from data.data_set import DataSet
 from data.emotion import Emotion
 from data.picture_metadata import PictureMetadata
@@ -42,7 +43,7 @@ def _get_generator(
 ) -> DirectoryIterator:
     return data_generator.flow_from_directory(
         _get_data_path(data_set),
-        target_size=PICTURE_SIZE,
+        target_size=PICTURE_SHAPE,
         batch_size=BATCH_SIZE,
         class_mode='categorical'
     )

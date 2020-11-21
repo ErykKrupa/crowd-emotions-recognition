@@ -1,14 +1,15 @@
 import os
 import shutil
 from os.path import isfile, isdir
-from typing import Tuple, Optional
+from typing import Tuple, Optional, Callable
 
 import numpy as np
 from keras import Model
 
-from config.config import BATCH_SIZE, EXTRACTED_DATA_CACHE_DIRECTORY
+from config.config import BATCH_SIZE, EXTRACTED_DATA_CACHE_DIRECTORY, PICTURE_SIZE
 from data.data_set import DataSet
 from data.preprocessing import get_amount_of_pictures, _get_generator
+from model.pretrained_preparation import get_pretrained
 from utils.utils import get_flatten_output_shape
 
 FEATURES = 'features'
@@ -60,23 +61,32 @@ def _save_to_cache(model_name: str, data_set, features: np.ndarray, labels: np.n
     np.save(_get_cache_path(model_name, data_set, LABELS), labels)
 
 
+def fill_in_cache(model_constructor: Callable) -> None:
+    convolution_base = get_pretrained(model_constructor)
+    extract_features(convolution_base, DataSet.TRAIN)
+    extract_features(convolution_base, DataSet.VALIDATION)
+
+
 def clear_whole_cache() -> None:
-    shutil.rmtree(EXTRACTED_DATA_CACHE_DIRECTORY, ignore_errors=True)
+    shutil.rmtree(_get_cache_path(), ignore_errors=True)
 
 
-def clear_cache(model_name: str, data_set: DataSet = None) -> None:
-    shutil.rmtree(_get_cache_path(model_name, data_set), ignore_errors=True)
+def clear_model_cache(model_name: str) -> None:
+    shutil.rmtree(_get_cache_path(model_name), ignore_errors=True)
 
 
 def _get_cache_path(
-        model_name: str,
+        model_name: str = '',
         data_set: DataSet = None,
         file_name: str = ''
 ) -> str:
-    path = EXTRACTED_DATA_CACHE_DIRECTORY + '/' + model_name
+    path = EXTRACTED_DATA_CACHE_DIRECTORY
+    if model_name == '':
+        return path
+    path += '/' + model_name
     if data_set is None:
         return path
-    path += '/' + data_set.value
+    path += '/' + str(PICTURE_SIZE) + '/' + data_set.value
     if file_name is '':
         return path
     return path + '/' + file_name + '.npy'

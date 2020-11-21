@@ -2,7 +2,7 @@ from math import ceil
 
 from keras.callbacks import History
 
-from config.config import *
+from config.config import EPOCHS, BATCH_SIZE, USE_PRETRAINED_MODEL, PRETRAINED_MODEL
 from data.data_set import DataSet
 from data.preprocessing import get_amount_of_pictures, get_train_generator, get_validation_generator
 from data.pretrained_preprocessing import extract_features
