@@ -32,11 +32,6 @@ def get_validation_generator() -> DirectoryIterator:
     return _get_generator(DataSet.VALIDATION)
 
 
-# todo
-def get_test_generator() -> DirectoryIterator:
-    pass
-
-
 def _get_generator(
         data_set: DataSet,
         data_generator: ImageDataGenerator = ImageDataGenerator(RESCALE)

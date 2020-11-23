@@ -7,9 +7,9 @@ import numpy as np
 from keras import Model
 
 from config.config import BATCH_SIZE, EXTRACTED_DATA_CACHE_DIRECTORY, PICTURE_SIZE
+from config.hidden_config import INPUT_SHAPE
 from data.data_set import DataSet
 from data.preprocessing import get_amount_of_pictures, _get_generator
-from model.pretrained_preparation import get_pretrained
 from utils.utils import get_flatten_output_shape
 
 FEATURES = 'features'
@@ -65,6 +65,12 @@ def fill_in_cache(model_constructor: Callable) -> None:
     convolution_base = get_pretrained(model_constructor)
     extract_features(convolution_base, DataSet.TRAIN)
     extract_features(convolution_base, DataSet.VALIDATION)
+
+
+def get_pretrained(model_constructor: Callable) -> Model:
+    return model_constructor(weights='imagenet',
+                             include_top=False,
+                             input_shape=INPUT_SHAPE)
 
 
 def clear_whole_cache() -> None:

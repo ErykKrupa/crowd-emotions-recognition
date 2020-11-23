@@ -2,5 +2,6 @@
 /data
 /models
 /extracted_cache
+/plots
 /notes.txt
 __pycache__/

@@ -3,6 +3,7 @@ from keras.applications import *
 # files
 DATA_DIRECTORY = 'data'
 MODELS_DIRECTORY = 'models'
+RESULTS_DIRECTORY = 'results'
 EXTRACTED_DATA_CACHE_DIRECTORY = 'extracted_cache'
 
 # preprocessing

@@ -1,14 +1,16 @@
+import sys
 from math import ceil
+from time import time
 
+from keras import Model
 from keras.callbacks import History
 
 from config.config import EPOCHS, BATCH_SIZE, USE_PRETRAINED_MODEL, PRETRAINED_MODEL
 from data.data_set import DataSet
 from data.preprocessing import get_amount_of_pictures, get_train_generator, get_validation_generator
-from data.pretrained_preprocessing import extract_features
+from data.pretrained_preprocessing import extract_features, get_pretrained
 from model.preparation import prepare_whole_model, prepare_end_of_model
-from model.pretrained_preparation import *
-from model.saving import save
+from model.saving import save_model, save_results
 from model.visualization import visualize
 from utils.utils import get_flatten_output_shape
 
@@ -29,7 +31,7 @@ def _launch_pre_trained_model() -> None:
         batch_size=BATCH_SIZE,
         validation_data=extract_features(convolution_base, DataSet.VALIDATION)
     )
-    _finish(history, model)
+    _finish(history, model, convolution_base.name)
 
 
 def _launch_model() -> None:
@@ -44,6 +46,7 @@ def _launch_model() -> None:
     _finish(history, model)
 
 
-def _finish(history: History, model: Model) -> None:
-    visualize(history)
-    save(model)
+def _finish(history: History, model: Model, name: str = '') -> None:
+    visualize(history, name)
+    save_model(model, name)
+    save_results(history, name)
