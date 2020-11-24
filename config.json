@@ -28,5 +28,8 @@
   "epochs": 12,
 
   "train_line_style": "b-",
-  "validation_line_style": "g-"
+  "validation_line_style": "g-",
+
+  "info_log": true,
+  "model_summary_log": false
 }

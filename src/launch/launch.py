@@ -12,37 +12,46 @@ from data.pretrained_preprocessing import extract_features, get_pretrained
 from model.preparation import prepare_whole_model, prepare_end_of_model
 from model.saving import save_model, save_results
 from model.visualization import visualize
+from utils.logger import log_info
 from utils.utils import get_flatten_output_shape
 
 
 def launch() -> None:
+    start_time = time()
     if Config.get('use_pretrained_model'):
         _launch_pre_trained_model()
     else:
         _launch_model()
+    log_info('Full execution time: ' + str(time() - start_time))
 
 
 def _launch_pre_trained_model() -> None:
-    start_time = time()
+    log_info('Launching pretrained model...')
     convolution_base = get_pretrained()
     model = prepare_end_of_model(get_flatten_output_shape(convolution_base))
+    train_data = extract_features(convolution_base, DataSet.TRAIN)
+    validation_data = extract_features(convolution_base, DataSet.VALIDATION)
+    log_info('Training...')
     history = model.fit(
-        *extract_features(convolution_base, DataSet.TRAIN),
+        *train_data,
         epochs=Config.get('epochs'),
         batch_size=Config.get('batch_size'),
-        validation_data=extract_features(convolution_base, DataSet.VALIDATION)
+        validation_data=validation_data
     )
     _finish(history, model, convolution_base.name)
-    print(convolution_base.name + ': ' + str(time() - start_time), file=sys.stderr)  # todo logger
 
 
 def _launch_model() -> None:
+    log_info('Launching model...')
     model = prepare_whole_model()
+    train_generator = get_train_generator()
+    validation_generator = get_validation_generator()
+    log_info('Training...')
     history = model.fit_generator(
-        get_train_generator(),
+        train_generator,
         steps_per_epoch=ceil(get_amount_of_pictures(DataSet.TRAIN) / Config.get('batch_size')),
         epochs=Config.get('epochs'),
-        validation_data=get_validation_generator(),
+        validation_data=validation_generator,
         validation_steps=ceil(get_amount_of_pictures(DataSet.VALIDATION) / Config.get('batch_size'))
     )
     _finish(history, model)

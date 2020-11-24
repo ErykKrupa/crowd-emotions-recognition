@@ -6,14 +6,17 @@ from keras import Model
 from keras.callbacks import History
 
 from config.config import Config
+from utils.logger import log_info
 
 
 def save_model(model: Model, name: str = '') -> None:
     model.save(_prepare_model_path(name))
+    log_info('Model saved')
 
 
 def save_results(history: History, name: str = '') -> None:
     np.save(_prepare_result_path(name), history.history['val_acc'])
+    log_info('Results saved')
 
 
 def _prepare_model_path(name: str) -> str:
