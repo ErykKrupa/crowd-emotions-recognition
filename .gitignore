@@ -1,7 +1,10 @@
 /.idea
+__pycache__/
+
 /data
 /models
+/results
 /extracted_cache
 /plots
+
 /notes.txt
-__pycache__/

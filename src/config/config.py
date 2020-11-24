@@ -1,39 +1,43 @@
-from keras.applications import *
+import json
+from copy import deepcopy
 
-# files
-DATA_DIRECTORY = 'data'
-MODELS_DIRECTORY = 'models'
-RESULTS_DIRECTORY = 'results'
-EXTRACTED_DATA_CACHE_DIRECTORY = 'extracted_cache'
 
-# preprocessing
-PICTURE_SIZE = 224  # 128, 160, 192, 224
+class Config:
+    # assignment after class initialization
+    _DEFAULT_CONFIG = None
+    _current_config = None
 
-# augmentation
-ROTATION_RANGE = 30
-WIDTH_SHIFT_RANGE = 0.1
-HEIGHT_SHIFT_RANGE = 0.1
-SHEAR_RANGE = 0.1
-ZOOM_RANGE = 0.1
-HORIZONTAL_FLIP = True
-VERTICAL_FLIP = False
-FILL_MODE = 'nearest'
+    @staticmethod
+    def get(key: str):
+        value = Config._current_config.get(key)
+        if value is not None:
+            return value
+        if key == 'picture_shape':
+            return Config.get('picture_size'), Config.get('picture_size')
+        if key == 'input_shape':
+            return Config.get('picture_shape') + (3, )
+        if key == 'kernel_shape':
+            return Config.get('kernel_size'), Config.get('kernel_size')
+        if key == 'pool_shape':
+            return Config.get('pool_size'), Config.get('pool_size')
+        return None
 
-# model construction
-KERNEL_SIZE = 3
-POOL_SIZE = 2
-ACTIVATION = 'relu'
-OPTIMIZER_LEARNING_RATE = 2e-5
-DROPOUT_RATE = 0.5
+    @staticmethod
+    def set_default_config() -> None:
+        Config._current_config = deepcopy(Config._DEFAULT_CONFIG)
 
-# pretrained model construction
-PRETRAINED_MODEL = VGG16
+    @staticmethod
+    def edit_current_config(config: dict) -> None:
+        Config._current_config.update(config)
 
-# model launching
-USE_PRETRAINED_MODEL = True
-BATCH_SIZE = 32
-EPOCHS = 10
+    @staticmethod
+    def set_config_based_on_default(config: dict) -> None:
+        Config.set_default_config()
+        Config.edit_current_config(config)
 
-# learning results visualization
-TRAIN_LINE_STYLE = 'b-'
-VALIDATION_LINE_STYLE = 'g-'
+
+with open('config.json') as file:
+    Config._DEFAULT_CONFIG = json.load(file)
+
+
+Config.set_default_config()

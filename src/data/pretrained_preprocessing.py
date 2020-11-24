@@ -4,10 +4,9 @@ from os.path import isfile, isdir
 from typing import Tuple, Optional, Callable
 
 import numpy as np
-from keras import Model
+from keras import Model, applications
 
-from config.config import BATCH_SIZE, EXTRACTED_DATA_CACHE_DIRECTORY, PICTURE_SIZE
-from config.hidden_config import INPUT_SHAPE
+from config.config import Config
 from data.data_set import DataSet
 from data.preprocessing import get_amount_of_pictures, _get_generator
 from utils.utils import get_flatten_output_shape
@@ -42,12 +41,13 @@ def _extract_from_file(convolution_base: Model, data_set: DataSet) -> Tuple[np.n
     labels = np.zeros(shape=(sample_count, 3))
     generator = _get_generator(data_set)
     i = 0
+    batch_size = Config.get('batch_size')
     for inputs_batch, labels_batch in generator:
         features_batch = convolution_base.predict(inputs_batch)
-        features[i * BATCH_SIZE: (i + 1) * BATCH_SIZE] = features_batch
-        labels[i * BATCH_SIZE: (i + 1) * BATCH_SIZE] = labels_batch
+        features[i * batch_size: (i + 1) * batch_size] = features_batch
+        labels[i * batch_size: (i + 1) * batch_size] = labels_batch
         i += 1
-        if i * BATCH_SIZE >= sample_count:
+        if i * batch_size >= sample_count:
             break
     features = np.reshape(features, (sample_count, get_flatten_output_shape(convolution_base)))
     return features, labels
@@ -61,16 +61,17 @@ def _save_to_cache(model_name: str, data_set, features: np.ndarray, labels: np.n
     np.save(_get_cache_path(model_name, data_set, LABELS), labels)
 
 
-def fill_in_cache(model_constructor: Callable) -> None:
-    convolution_base = get_pretrained(model_constructor)
+def fill_in_cache() -> None:
+    convolution_base = get_pretrained()
     extract_features(convolution_base, DataSet.TRAIN)
     extract_features(convolution_base, DataSet.VALIDATION)
 
 
-def get_pretrained(model_constructor: Callable) -> Model:
+def get_pretrained() -> Model:
+    model_constructor = getattr(applications, Config.get('pretrained_model'))
     return model_constructor(weights='imagenet',
                              include_top=False,
-                             input_shape=INPUT_SHAPE)
+                             input_shape=Config.get('input_shape'))
 
 
 def clear_whole_cache() -> None:
@@ -86,13 +87,13 @@ def _get_cache_path(
         data_set: DataSet = None,
         file_name: str = ''
 ) -> str:
-    path = EXTRACTED_DATA_CACHE_DIRECTORY
+    path = Config.get('extracted_data_cache_directory')
     if model_name == '':
         return path
     path += '/' + model_name
     if data_set is None:
         return path
-    path += '/' + str(PICTURE_SIZE) + '/' + data_set.value
+    path += '/' + str(Config.get('picture_size')) + '/' + data_set.value
     if file_name is '':
         return path
     return path + '/' + file_name + '.npy'

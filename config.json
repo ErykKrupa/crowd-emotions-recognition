@@ -1,0 +1,32 @@
+{
+  "data_directory": "data",
+  "models_directory": "models",
+  "results_directory": "results",
+  "extracted_data_cache_directory": "extracted_cache",
+
+  "picture_size": 224,
+
+  "rotation_range": 30,
+  "width_shift_range": 0.2,
+  "height_shift_range": 0.2,
+  "shear_range": 0.2,
+  "zoom_range": 0.2,
+  "horizontal_flip": true,
+  "vertical_flip": false,
+  "fill_mode": "nearest",
+
+  "kernel_size": 3,
+  "pool_size": 2,
+  "activation": "relu",
+  "optimizer_learning_rate": 2e-4,
+  "dropout_rate": 0.5,
+
+  "pretrained_model": "VGG16",
+
+  "use_pretrained_model": false,
+  "batch_size": 32,
+  "epochs": 12,
+
+  "train_line_style": "b-",
+  "validation_line_style": "g-"
+}
