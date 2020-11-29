@@ -13,6 +13,8 @@ RESCALE = 1. / 255
 
 
 def get_train_generator() -> DirectoryIterator:
+    if not Config.get('data_augmentation'):
+        return _get_generator(DataSet.TRAIN)
     data_generator: ImageDataGenerator = ImageDataGenerator(
         rescale=RESCALE,
         rotation_range=Config.get('rotation_range'),

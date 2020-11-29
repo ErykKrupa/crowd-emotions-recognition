@@ -55,6 +55,6 @@ def _finish(model: Model) -> None:
 
 def _compile(model: Model) -> None:
     model.compile(loss='categorical_crossentropy',
-                  optimizer=optimizers.RMSprop(lr=Config.get('optimizer_learning_rate')),
+                  optimizer=optimizers.Adam(lr=Config.get('optimizer_learning_rate')),
                   metrics=['acc'])
 

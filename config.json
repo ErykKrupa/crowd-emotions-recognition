@@ -4,8 +4,20 @@
   "results_directory": "results",
   "extracted_data_cache_directory": "extracted_cache",
 
-  "picture_size": 224,
+  "use_pretrained_model": false,
+  "pretrained_model": "VGG16",
 
+  "epochs": 10,
+  "batch_size": 16,
+  "picture_size": 224,
+  "activation": "sigmoid",
+  "optimizer_learning_rate": 1e-3,
+  "dropout_rate": 0.5,
+
+  "kernel_size": 3,
+  "pool_size": 2,
+
+  "data_augmentation": true,
   "rotation_range": 30,
   "width_shift_range": 0.2,
   "height_shift_range": 0.2,
@@ -15,21 +27,9 @@
   "vertical_flip": false,
   "fill_mode": "nearest",
 
-  "kernel_size": 3,
-  "pool_size": 2,
-  "activation": "relu",
-  "optimizer_learning_rate": 2e-4,
-  "dropout_rate": 0.5,
-
-  "pretrained_model": "VGG16",
-
-  "use_pretrained_model": false,
-  "batch_size": 32,
-  "epochs": 12,
-
   "train_line_style": "b-",
   "validation_line_style": "g-",
 
   "info_log": true,
-  "model_summary_log": false
+  "model_summary_log": true
 }
