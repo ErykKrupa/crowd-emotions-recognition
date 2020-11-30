@@ -31,7 +31,7 @@ def prepare_whole_model() -> Model:
     model.add(Flatten())
     model.add(Dropout(Config.get('dropout_rate')))
     model.add(Dense(512, activation=activation))
-    model.add(Dense(3, activation=activation))
+    model.add(Dense(3, activation='softmax'))
     _finish(model)
 
     return model

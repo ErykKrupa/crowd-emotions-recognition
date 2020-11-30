@@ -10,6 +10,7 @@ from utils.logger import log_info
 
 
 def save_model(model: Model, name: str = '') -> None:
+    log_info('Saving model...')
     model.save(_prepare_model_path(name))
     log_info('Model saved')
 

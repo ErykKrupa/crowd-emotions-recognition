@@ -3,6 +3,7 @@
   "models_directory": "models",
   "results_directory": "results",
   "extracted_data_cache_directory": "extracted_cache",
+  "default_model_path": "models/Model_20-11-29_16-07-46.h5",
 
   "use_pretrained_model": false,
   "pretrained_model": "VGG16",

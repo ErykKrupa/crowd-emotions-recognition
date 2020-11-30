@@ -1,7 +1,7 @@
 import os
 import shutil
 from os.path import isfile, isdir
-from typing import Tuple, Optional, Callable
+from typing import Tuple, Optional
 
 import numpy as np
 from keras import Model, applications
