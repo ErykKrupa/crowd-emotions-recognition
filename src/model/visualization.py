@@ -19,6 +19,7 @@ def visualize(history: History, name: str = ''):
     plt.plot(epochs, val_acc, validation_line_style, label='Validation accuracy')
     plt.title('Training and validation accuracy' + (' of ' + name if name != '' else ''))
     plt.legend()
+    plt.grid(which='both', axis='both')
 
     plt.figure()
 
@@ -26,5 +27,6 @@ def visualize(history: History, name: str = ''):
     plt.plot(epochs, val_loss, validation_line_style, label='Validation loss')
     plt.title('Training and validation loss')
     plt.legend()
+    plt.grid(which='both', axis='both')
 
     plt.show()

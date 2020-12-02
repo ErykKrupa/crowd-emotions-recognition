@@ -1,4 +1,3 @@
-import sys
 from math import ceil
 from time import time
 
@@ -22,7 +21,8 @@ def launch() -> None:
         _launch_pre_trained_model()
     else:
         _launch_model()
-    log_info('Full execution time: ' + str(time() - start_time))
+    exec_time = time() - start_time
+    log_info(f'Execution time: {exec_time // 60:.0f} min {exec_time % 60:.0f} sec')
 
 
 def _launch_pre_trained_model() -> None:

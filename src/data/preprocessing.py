@@ -1,13 +1,11 @@
 from os import listdir
 from os.path import isfile, isdir
-from typing import List
 
 from keras.preprocessing.image import ImageDataGenerator, DirectoryIterator
 
 from config.config import Config
 from data.data_set import DataSet
 from data.emotion import Emotion
-from data.picture_metadata import PictureMetadata
 
 RESCALE = 1. / 255
 
@@ -56,26 +54,21 @@ def _get_data_path(
            + file_name
 
 
-def get_all_pictures_metadata(
-        data_set: DataSet,
-        emotion: Emotion = Emotion.UNSPECIFIED
-) -> List[PictureMetadata]:
-    list_ = []
+def get_amount_of_pictures(data_set: DataSet, emotion: Emotion = Emotion.UNSPECIFIED) -> int:
     if emotion == Emotion.UNSPECIFIED:
+        counter = 0
         for emotion in Emotion:
-            _add_pictures_metadata_to_set(list_, data_set, emotion)
+            counter += _get_amount_of_pictures_for_emotion(data_set, emotion)
+        return counter
     else:
-        _add_pictures_metadata_to_set(list_, data_set, emotion)
-    return list_
+        return _get_amount_of_pictures_for_emotion(data_set, emotion)
 
 
-def _add_pictures_metadata_to_set(list_: list, data_set: DataSet, emotion: Emotion) -> None:
+def _get_amount_of_pictures_for_emotion(data_set: DataSet, emotion: Emotion) -> int:
     path = _get_data_path(data_set, emotion)
     if isdir(path):
-        list_.extend([PictureMetadata(f, emotion)
-                      for f in listdir(path)
-                      if isfile(path + f) and f.endswith('.jpg')])
-
-
-def get_amount_of_pictures(data_set: DataSet, emotion: Emotion = Emotion.UNSPECIFIED) -> int:
-    return len(get_all_pictures_metadata(data_set, emotion))
+        counter = 0
+        for f in listdir(path):
+            if isfile(path + f) and f.endswith('.jpg'):
+                counter += 1
+        return counter
