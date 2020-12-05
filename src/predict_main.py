@@ -1,4 +1,5 @@
 import argparse
+import json
 from copy import deepcopy
 from os import listdir
 from os.path import isdir, isfile
@@ -25,10 +26,18 @@ parser.add_argument('paths',
                     nargs='+',
                     help='paths to the images for prediction in .jpg format, '
                          'or to the directories containing those images')
+parser.add_argument('-o',
+                    '--output',
+                    type=str,
+                    required=False,
+                    help='instead of showing results on standard output, '
+                         'write it to .json file whose format depends '
+                         'on whether --verbose is specified')
 parser.add_argument('-v',
                     '--verbose',
-                    action="store_true",
-                    help='show detailed predictions results')
+                    action='store_true',
+                    help='show detailed predictions results, or write more '
+                         'information to file when --output option is specified')
 args = parser.parse_args()
 
 images = []
@@ -60,22 +69,40 @@ log_info('Data prepared')
 
 log_info('Recognizing emotions...')
 predictions = model.predict(input_arr)
+
+results = {}
 if args.verbose:
-    for prediction, name in zip(predictions, images):
-        print()
-        print(f'Prediction for: {name}')
-        print(f'Positive: {prediction[2] * 100:>6.2f}%')
-        print(f'Neutral:  {prediction[1] * 100:>6.2f}%')
-        print(f'Negative: {prediction[0] * 100:>6.2f}%')
+    results = {name: {
+        'positive': round(prediction[2] * 100, 2),
+        'neutral': round(prediction[1] * 100, 2),
+        'negative': round(prediction[0] * 100, 2),
+    } for prediction, name in zip(predictions, images)}
 else:
-    print(f'Predicted emotions: ')
-    max_name_length = max(map(lambda a: len(a), images))
-    max_name_length = min(max_name_length, 85)
-    max_name_length = max(max_name_length, 30)
     for prediction, name in zip(predictions, images):
         predicted_emotion, higher = ('positive', prediction[2]) \
             if prediction[2] > prediction[0] \
             else ('negative', prediction[0])
         if prediction[1] > higher:
             predicted_emotion = 'neutral'
-        print(f'{name:.<{max_name_length}}{predicted_emotion:.>15}')
+        results[name] = predicted_emotion
+
+if args.output:
+    with open(args.output, 'w') as file:
+        json.dump(results, file, indent=4)
+    log_info(f'Results saved in {args.output} file')
+    exit(0)
+
+if args.verbose:
+    for name, result in results.items():
+        print()
+        print(f'Prediction for: {name}')
+        print(f'Positive: {dict(result)["positive"]:>6.2f}%')
+        print(f'Neutral:  {dict(result)["neutral"]: >6.2f}%')
+        print(f'Negative: {dict(result)["negative"]:>6.2f}%')
+else:
+    print(f'Predicted emotions: ')
+    max_name_length = max(map(lambda a: len(a), images))
+    max_name_length = min(max_name_length, 85)
+    max_name_length = max(max_name_length, 30)
+    for name, emotion in results.items():
+        print(f'{name:.<{max_name_length}}{emotion:.>15}')
