@@ -4,8 +4,8 @@ from copy import deepcopy
 
 class Config:
     # assignment after class initialization
-    _DEFAULT_CONFIG = None
-    _current_config = None
+    _DEFAULT_CONFIG: dict = None
+    _current_config: dict = None
 
     @staticmethod
     def get(key: str):

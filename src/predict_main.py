@@ -50,7 +50,7 @@ if not images:
     exit(1)
 
 log_info('Loading model...')
-model = load_model(args.model)
+model = load_model(args.model, compile=False)
 log_info(f'Model {args.model} loaded')
 
 log_info('Preparing data...')
@@ -60,7 +60,6 @@ log_info('Data prepared')
 
 log_info('Recognizing emotions...')
 predictions = model.predict(input_arr)
-
 if args.verbose:
     for prediction, name in zip(predictions, images):
         print()
