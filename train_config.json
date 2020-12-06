@@ -3,23 +3,22 @@
   "models_directory": "models",
   "results_directory": "results",
   "extracted_data_cache_directory": "extracted_cache",
-  "default_model_path": "models/Model_20-11-29_16-07-46.h5",
 
   "use_pretrained_model": false,
   "pretrained_model": "VGG16",
 
   "epochs": 10,
-  "batch_size": 16,
+  "batch_size": 8,
   "picture_size": 224,
-  "activation": "sigmoid",
-  "optimizer_learning_rate": 1e-3,
+  "activation": "tanh",
+  "optimizer_learning_rate": 1e-5,
   "dropout_rate": 0.5,
 
   "kernel_size": 3,
   "pool_size": 2,
 
   "data_augmentation": true,
-  "rotation_range": 30,
+  "rotation_range": 40,
   "width_shift_range": 0.2,
   "height_shift_range": 0.2,
   "shear_range": 0.2,
@@ -33,5 +32,5 @@
 
   "info_log": true,
   "model_summary_log": true,
-  "tensorflow_log": false
+  "tensorflow_log": true
 }

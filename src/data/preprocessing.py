@@ -3,7 +3,7 @@ from os.path import isfile, isdir
 
 from keras.preprocessing.image import ImageDataGenerator, DirectoryIterator
 
-from config.config import Config
+from config.config import train_config as config
 from data.data_set import DataSet
 from data.emotion import Emotion
 
@@ -11,18 +11,18 @@ RESCALE = 1. / 255
 
 
 def get_train_generator() -> DirectoryIterator:
-    if not Config.get('data_augmentation'):
+    if not config.get('data_augmentation'):
         return _get_generator(DataSet.TRAIN)
     data_generator: ImageDataGenerator = ImageDataGenerator(
         rescale=RESCALE,
-        rotation_range=Config.get('rotation_range'),
-        width_shift_range=Config.get('width_shift_range'),
-        height_shift_range=Config.get('height_shift_range'),
-        shear_range=Config.get('shear_range'),
-        zoom_range=Config.get('zoom_range'),
-        horizontal_flip=Config.get('horizontal_flip'),
-        vertical_flip=Config.get('vertical_flip'),
-        fill_mode=Config.get('fill_mode')
+        rotation_range=config.get('rotation_range'),
+        width_shift_range=config.get('width_shift_range'),
+        height_shift_range=config.get('height_shift_range'),
+        shear_range=config.get('shear_range'),
+        zoom_range=config.get('zoom_range'),
+        horizontal_flip=config.get('horizontal_flip'),
+        vertical_flip=config.get('vertical_flip'),
+        fill_mode=config.get('fill_mode')
     )
     return _get_generator(DataSet.TRAIN, data_generator)
 
@@ -37,8 +37,8 @@ def _get_generator(
 ) -> DirectoryIterator:
     return data_generator.flow_from_directory(
         _get_data_path(data_set),
-        target_size=Config.get('picture_shape'),
-        batch_size=Config.get('batch_size'),
+        target_size=config.get('picture_shape'),
+        batch_size=config.get('batch_size'),
         class_mode='categorical'
     )
 
@@ -48,7 +48,7 @@ def _get_data_path(
         emotion: Emotion = Emotion.UNSPECIFIED,
         file_name: str = ''
 ) -> str:
-    return Config.get('data_directory') + '/' \
+    return config.get('data_directory') + '/' \
            + data_set.value + '/' \
            + (emotion.value + '/' if emotion != Emotion.UNSPECIFIED else '') \
            + file_name

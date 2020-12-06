@@ -3,41 +3,48 @@ from copy import deepcopy
 
 
 class Config:
-    # assignment after class initialization
-    _DEFAULT_CONFIG: dict = None
-    _current_config: dict = None
+    def __init__(self, file_name: str):
+        self._file_name = file_name
+        self._DEFAULT_CONFIG = None
+        self._current_config = None
 
-    @staticmethod
-    def get(key: str):
-        value = Config._current_config.get(key)
+    def _create(self):
+        with open(self._file_name) as file:
+            self._DEFAULT_CONFIG = json.load(file)
+        self.set_default_config()
+
+    def get(self, key: str):
+        if not self._DEFAULT_CONFIG:
+            self._create()
+        value = self._current_config.get(key)
         if value is not None:
             return value
         if key == 'picture_shape':
-            return Config.get('picture_size'), Config.get('picture_size')
+            return self.get('picture_size'), self.get('picture_size')
         if key == 'input_shape':
-            return Config.get('picture_shape') + (3, )
+            return self.get('picture_shape') + (3, )
         if key == 'kernel_shape':
-            return Config.get('kernel_size'), Config.get('kernel_size')
+            return self.get('kernel_size'), self.get('kernel_size')
         if key == 'pool_shape':
-            return Config.get('pool_size'), Config.get('pool_size')
+            return self.get('pool_size'), self.get('pool_size')
         return None
 
-    @staticmethod
-    def set_default_config() -> None:
-        Config._current_config = deepcopy(Config._DEFAULT_CONFIG)
+    def set_default_config(self) -> None:
+        if not self._DEFAULT_CONFIG:
+            self._create()
+        self._current_config = deepcopy(self._DEFAULT_CONFIG)
 
-    @staticmethod
-    def edit_current_config(config: dict) -> None:
-        Config._current_config.update(config)
+    def edit_current_config(self, config: dict) -> None:
+        if not self._DEFAULT_CONFIG:
+            self._create()
+        self._current_config.update(config)
 
-    @staticmethod
-    def set_config_based_on_default(config: dict) -> None:
-        Config.set_default_config()
-        Config.edit_current_config(config)
-
-
-with open('config.json') as file:
-    Config._DEFAULT_CONFIG = json.load(file)
+    def set_config_based_on_default(self, config: dict) -> None:
+        if not self._DEFAULT_CONFIG:
+            self._create()
+        self.set_default_config()
+        self.edit_current_config(config)
 
 
-Config.set_default_config()
+train_config = Config('train_config.json')
+predict_config = Config('predict_config.json')

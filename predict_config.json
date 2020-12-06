@@ -1,0 +1,8 @@
+{
+  "model_path": "models/Model_20-12-03_02-01-01-vgg16.h5",
+  "output_file": null,
+  "verbose": false,
+
+  "info_log": true,
+  "tensorflow_log": false
+}

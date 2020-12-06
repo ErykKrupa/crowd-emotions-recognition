@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 from keras.callbacks import History
 
-from config.config import Config
+from config.config import train_config as config
 
 
 def visualize(history: History, name: str = ''):
@@ -12,8 +12,8 @@ def visualize(history: History, name: str = ''):
 
     epochs = range(1, len(acc) + 1)
 
-    train_line_style = Config.get('train_line_style')
-    validation_line_style = Config.get('validation_line_style')
+    train_line_style = config.get('train_line_style')
+    validation_line_style = config.get('validation_line_style')
 
     plt.plot(epochs, acc, train_line_style, label='Training accuracy')
     plt.plot(epochs, val_acc, validation_line_style, label='Validation accuracy')

@@ -5,30 +5,30 @@ import numpy as np
 from keras import Model
 from keras.callbacks import History
 
-from config.config import Config
-from utils.logger import log_info
+from config.config import train_config as config
+from utils.logger import train_log as log
 
 
 def save_model(model: Model, name: str = '') -> None:
-    log_info('Saving model...')
+    log('Saving model...')
     model.save(_prepare_model_path(name))
-    log_info('Model saved')
+    log('Model saved')
 
 
 def save_results(history: History, name: str = '') -> None:
     np.save(_prepare_result_path(name), history.history['val_acc'])
-    log_info('Results saved')
+    log('Results saved')
 
 
 def _prepare_model_path(name: str) -> str:
-    models_directory = Config.get('models_directory')
+    models_directory = config.get('models_directory')
     if not os.path.exists(models_directory):
         os.makedirs(models_directory)
     return _get_path(models_directory, 'Model_', name, '.h5')
 
 
 def _prepare_result_path(name: str) -> str:
-    results_directory = Config.get('results_directory')
+    results_directory = config.get('results_directory')
     if not os.path.exists(results_directory):
         os.makedirs(results_directory)
     return _get_path(results_directory, 'Result_', name, '.npy')
