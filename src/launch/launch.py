@@ -1,10 +1,15 @@
+from os import environ
+
+from config.config import Config
+
+environ['TF_CPP_MIN_LOG_LEVEL'] = '0' if Config.get('tensorflow_log') else '3'
+
 from math import ceil
 from time import time
 
 from keras import Model
 from keras.callbacks import History
 
-from config.config import Config
 from data.data_set import DataSet
 from data.preprocessing import get_amount_of_pictures, get_train_generator, get_validation_generator
 from data.pretrained_preprocessing import extract_features, get_pretrained

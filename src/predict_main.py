@@ -1,3 +1,9 @@
+from os import environ
+
+from config.config import Config
+
+environ['TF_CPP_MIN_LOG_LEVEL'] = '0' if Config.get('tensorflow_log') else '3'
+
 import argparse
 import json
 from copy import deepcopy
@@ -9,7 +15,6 @@ import numpy as np
 from keras.models import load_model
 from keras.preprocessing.image import img_to_array, load_img
 
-from config.config import Config
 from utils.logger import log_info
 
 parser = argparse.ArgumentParser()
