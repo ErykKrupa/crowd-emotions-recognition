@@ -1,103 +1,21 @@
-\chapter{Projekt systemu}
+\chapter{Wprowadzenie do uczenia maszynowego}
 \thispagestyle{chapterBeginStyle}
+\label{chapter2}
 
-Tutaj ogólne wprowadzenie w architekturę systemu.
 
-% {\color{dgray}
-% W tym rozdziale przedstawiono szczegółowy projekt systemy w notacji UML uwzględniający wymagania funkcjonalne opisane w rozdziale~\ref{rozdzial1}. Do opisu relacji pomiędzy składowymi systemu wykorzystano diagramy \ldots.
-% Przedstawiono w pseudokodzie i omówiono algorytmy generowania \ldots.
-% }
+\section{Podstawowe pojęcia}
+Poniżej znajdują się najważniejsze pojęcia, których znajomość jest niezbędna podczas lektury niniejszej pracy.
 
-\section{Dane}
-Tutaj zostaną przedstawione wszystkie informacje dotyczące bazy danych Group Affect Database, odpowiedź na pytanie dlaczego została wybrana oraz aspekty prawne.
+Sztuczna inteligencja (ang. artificial intelligence)- zautomatyzowany proces myślowy standardowo wykonywany przez ludzi, zdolny do podejmowania decyzji na podstawie analizy środowiska, dążący do maksymalizacji szansy na pomyślne osiągnięcie zdefiniowanego celu.
 
-\section{Model}
-Tutaj zostanie omówiona architektura sieci neuronowej, oraz spróbuję odpowiedzieć na pytanie czemu akurat taka architektura spełnia swoją rolę.
+Uczenie maszynowe (ang. machine learning)- forma sztucznej inteligencji zdolna do doskonalenia się poprzez doświadczenie. Podczas, gdy klasyczne algorytmy wykorzystują zdefiniowane przez programistę reguły do przetwarzania danych w celu uzyskania pewnych wyników, algorytmy uczenia maszynowego wykorzystują dane i uprzednio uzyskane wyniki, w celu tworzenia i doskonalenia reguł przetwarzania nowych, podobnych danych.
 
-\section{Wyniki}
-Tutaj zostaną przedstawione wyniki (również wydajnościowe) dla testów.
+Uczenie głębokie (ang. machine learning)- dziedzina uczenia maszynowego, sposób uczenia się, który kładzie nacisk na trenowanie modeli o wielu warstwach, z których każda kolejna stanowi coraz to lepszą reprezencję rozpatrywanych danych. Z reguły tymi modelami są sztuczne sieci neuronowe.
 
-% \section{Grupy użytkowników i założenia}
+Sztuczna sieć neuronowa (ang. artificial neural network)- struktura realizująca obliczenia za pomocą kolejnych warstw elementów przetwarzających, tj. sztucznych neuronów (ang. artificial neuron) zdolnych do odbierania sygnału, przetwarzania go i przekazywania do kolejnych neuronów. Sygnał jest reprezentowany przez liczbę rzeczywistą, a obliczany jest za pomocą nieliniowej fukcji zwanej funkcją aktywacji (ang. activation function). Z reguły neurony są zaagregowane w warstwy (ang. layers), a każda z warst ma przypisaną fukcję aktywacji. W najprostrzych modelach sekwencyjnych sygnały są przekazywane od warstwy wejściowej (ang. input layer), kolejno przez wszystkie warstwy, aż do warstwy wyjściowej (ang. output layer). Warstwę nazywamy gęsto połączoną, jeśli każdy jej neuron jest połączony z każdym z wartwy kolejnej. Ponadto, z każdym neuronem związany jest bias (ang. bias), czyli wartość, która musi być przekroczona, aby neuron przekazywał sygnał. Połączenia między neuronami reprezentowane są przez zmienne zwane wagami (ang. weights). Modyfikowanie wag i biasów w trakcie prowadzenia obliczeń pozwala na dostrajanie modelu, czyli uczenie się sztucznej sieci neuronowej. Do tego celu potrzebne są dane treningowe, wraz z przypisanymi im etykietami docelowymi. Podczas nauki, sieć wykorzystuje funkcje straty (ang. loss function) do porównywania wartości etykiet docelowych z tymi przewidywanymi przez model. Na podstawie wyniku tej funkcji sieć jest w stanie określić, jak odległa była jej odpowiedź od odpowiedzi idealnej. Ta wiedza wykorzystywana jest przez optymalizator (ang. optimizer) w celu dostrajania sieci.
 
-% {\color{dgray}
-% Architektura systemu \ldots jest wielowarstwowa i rozproszona, przy czym \ldots. Podsystem  \ldots jest systemem zbiorczym dla danych \ldots wysyłanych do serwera \ldots. 
+Konwolucyjna sieć neuronowa (ang. convolutional neural network, CNN, ConvNet)- to szczególna klasa sieci neuronowych, szeroko wykorzystywana w analizie obrazów i wideo z uwagi na przewagę nad klasycznymi sieciami neuronowymi w przynajmniej dwóch aspektach. Podstawową różnicą między siecią gęsto połączoną, a siecią konwolucyjną jest to, że ta pierwsza uczy się rozpoznawania cech globalnych, a ta druga- lokalnych wzorców. W przypadku obrazów cechy są znajdowane w małych, dwuwymiarowych oknach danych wejściowych (czyli małych wycinkach obrazu w przypadku analizy podejmowanej przez pierwszą warstwę sieci). Dzięki temu, wzorce obrazu rozpoznawane przez model są niezależne od pozycji tego wzorca na obrazie. Dla przykładu, sieć konwolucyjna po rozpoznaniu określonego wzoru w prawym dolnym rogu obrazu może rozpoznać go również np. w lewym górnym rogu obrazu. Sieć gęsta musiała by nauczyć się tej cechy na nowo. Oznacza to, że modele konwolucyjne nie wiążą kształtu z jego położeniem w kadrze. Z tego powodu charakteryzują się one większą wydajnością. Drugą zaletą sieci konwolucyjnych jest to, że uczą się na przestrzeni hierarchii wzorów. Oznacza to, że pierwsze warstwy uczą się małych lokalnych wzorców, takich jak na przykład krawędzie czy tekstury, a kolejne bardziej skomplikowanych struktur składających się z elementów rozpoznanych przez wartwy poprzednie, itd. Takie podejście pozwala na wydajne uczenie się coraz bardziej złożonych i abstrakcyjnych koncepcji graficznych.
 
-% Taka architektura jest zgodna z wzorcem projektowym MVC\footnote{Należy odnieść się do wykorzystywanych wzorców projektowych} (ang.  Model-View-Controller). Przetwarzanie danych odbywa się \ldots.
-% } 
 
-% \section{Przypadki użycia i scenariusze}
-
-% W tej sekcji należy przedstawić przypadki użycia oraz odpowiadające im scenariusze dla poszczególnych grup użytkowników \ldots.
-
-% \section{Diagramy klas}
-
-% W tej sekcji należy przedstawić diagramy klas dla odpowiednich elementów systemu zidentyfikowane na podstawie wcześniejszych rozważań 
-
-% \section{Diagramy aktywności}
-
-% W tej sekcji należy przedstawić diagramy aktywności dla elementów systemu i odpowiednich procesów wynikające z wcześniejszej analizy.  
-
-% {\color{dgray}
-% W niniejszym rozdziale przedstawiono diagramy aktywności \ldots. Diagram na rysunku~\ref{czynnosci_GD} przedstawia \ldots.
-% } 
-
-% \begin{figure}[h!]
-% \begin{center}
-% \includegraphics[width=0.5\textwidth]{aktyw.pdf}
-% \end{center}
-% \caption{{\color{dgray}Diagram aktywności związany z procesem rejestracji dokumentu.}} \label{czynnosci_GD}
-% \end{figure}  
-
-% \section{Diagramy sekwencji}
-
-% W tej sekcji należy przedstawić diagramy sekwencji dla obiektów systemu zidentyfikowanych na podstawie wcześniejszych rozważań. Należy wykorzystać nazewnictwo wprowadzone w poprzednich rozdziałach, w szczególności odpowiadające definicjom wprowadzonych klas.
-
-% \section{Diagramy stanów}
-
-% W tej sekcji należy przedstawić diagramy stanów w których może znaleźć się system. Diagramy te są szczególnie istotne przy projektowaniu systemów czasu rzeczywistego. 
-
-% \section{Projekt bazy danych}
-
-% W tej sekcji należy przedstawić projekt bazy danych. Należy omówić wycinek rzeczywistości i odpowiadające mu zidentyfikowane elementy systemu, których wartości będą podlegać utrwalaniu. Należy przedyskutować wybór typów danych dla atrybutów poszczególnych obiektów. Należy uzasadnić wybór platformy DBMS. Dla relacyjnych baz danych należy przedyskutować jej normalizację.
-
-% \section{Opis protokołów}
-
-% W tej sekcji należy omówić protokoły wykorzystywane przez komponenty systemu. Omówić formaty komunikatów i zilustrować je przykładami. 
-
-% \section{Opis algorytmów}
-
-% W tej sekcji należy wymienić i przedyskutować algorytmy wykorzystywane w systemie. Algorytmy należy przedstawić w pseudokodzie (wykorzystać pakiet \texttt{algorithm2e}). Omówienia poszczególnych kroków algorytmów powinny zawierać odwołania do odpowiednich linii pseudokodu. Dla zaproponowanych autorskich algorytmów należy przeprowadzić analizę ich złożoności czasowej i pamięciowej. 
-
-% {\color{dgray}
-% Algorytm bąblowania jest przedstawiony w Pseudokodzie~\ref{alg:mine}.
-% }
-
-% {\small
-% \begin{pseudokod}[H]
-% %\SetAlTitleFnt{small}
-% \SetArgSty{normalfont}
-% \SetKwFunction{Process}{Process}
-% \SetKwFunction{Calculate}{Calculate}
-% \KwIn{Zbiór bąbli $B$}
-% \KwOut{Wyporność $W$}
-% \ForEach{$b \in B$}{
-% \Process{$b$}\;
-% \For{$i \leftarrow 1$ \KwTo $|B|$}{
-% \If{\Calculate{EW($i$,$b$)} $\le$ 0}{
-% $b \leftarrow 2*b$\;
-% }
-% }
-% }
-% \While{$B \neq \emptyset$}{
-% \For{$j \leftarrow 1$ \KwTo $|B|$}{
-% \If{\Calculate{FT($j$,$\hat{b}$)} $\le 0$}{
-% $w \leftarrow 2*\hat{b}$\;
-% $W \leftarrow W \cup \{w\}$\;
-% $B \leftarrow B \setminus \{b\}$\;
-% }
-% }
-% }
-% \caption{Wyporność przez bąblowanie}\label{alg:mine}
-% \end{pseudokod}
-% }
-
+\section{Przegląd literatury}
+Tutaj pozycje ogólnie związane z implementacją konwolucyjnych sieci neuronowych.

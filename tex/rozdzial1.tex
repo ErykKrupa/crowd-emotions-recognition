@@ -1,23 +1,19 @@
-\chapter{Analiza problemu}
+\chapter{Wstęp}
 \thispagestyle{chapterBeginStyle}
-\label{rozdzial1}
+\label{chapter1}
 
-W tym rozdziale zostanie zostanie przedstawiony problem analizy emocji na zdjęciach tłumów i grup ludzi, jak również dotychczasowe podejścia do tego problemu, moje podejście, oraz to, czego dokładnie oczekujemy od modelu.
 
-% W tym rozdziale należy przedstawić analizę zagadnienia, które podlega informatyzacji. Należy zidentyfikować i opisać obiekty składowe rozważanego wycinka rzeczywistości i ich wzajemne relacje (np.\ użytkowników systemu i ich role). Należy szczegółowo omówić procesy jakie zachodzą w systemie i które będą informatyzowane, takie jak np.\ przepływ dokumentów.
-% Należy sprecyzować i wypunktować założenia funkcjonalne i poza funkcjonalne dla projektowanego systemu.
-% Jeśli istnieją aplikacje realizujące dowolny podzbiór zadanych funkcjonalności realizowanego systemu należy przeprowadzić ich analizę porównawczą, wskazując na różnice bądź innowacyjne elementy, które projektowany w pracy system informatyczny będzie zawierał.
-% Należy odnieść się do uwarunkowań prawnych związanych z procesami przetwarzania danych w projektowanym systemie.
-% Jeśli zachodzi konieczność, należy wprowadzić i omówić model matematyczny elementów systemu na odpowiednim poziomie abstrakcji.
+Sieci neuronowe pozwalające na analizę emocji tłumów to wciąż jeszcze słabo przebadany temat. W ciągu ostatnich kilku lat zyskuje jednak zainteresowanie naukowe \cite{Group1}\cite{Group2}\cite{Group3}\cite{Group4}, głównie ze względu na ogromną ilość danych dostępnych na serwisach społecznościowych, zawierających zdjęcia grup osób uczestniczących w różnych wydarzeniach towarzyskich.
 
-% {\color{dgray}
-% W niniejszym rozdziale omówiono koncepcję architektury programowej systemu \ldots. W
-% szczególny sposób \ldots. Omówiono założenia funkcjonalne i niefunkcjonalne podsystemów \ldots. Przedstawiono
-% mechanizmy \ldots. Sklasyfikowano systemy ze względu na \ldots. Omówiono istniejące rozwiązania informatyczne o podobnej funkcjonalności \ldots (zobacz \cite{JCINodesChord}).
-% }
+Poniższa praca porusza temat uczenia maszynowego, w szczególności aspekty związane z sieciami neuronowymi i ich wykorzystaniem. Praca skupia się na projektowaniu, budowaniu i trenowaniu głębokich konwolucyjnych sieci neuronowych, a także na wykorzystaniu ich w analizie dominujących emocji panujących na zdjęciach tłumów i dużych grup ludzi. Ponadto, w pracy poruszany jest również temat baz danych przechowujących wyżej wspomniane zdjęcia wraz z odpowiadającymi im oznaczeniami wskazującymi dominującą na obrazie emocje, jak również temat aplikacji mającej ułatwić i zautomatyzować proces trenowania sieci neuronowych.
 
-\section{Analiza i porównanie istniejących rozwiązań}
-Jednym z przykładów pracy poruszającej ten temat jest Group Emotion Recognition Using Machine Learning autorstwa Samanyou Garg \cite{SGarg}. Autor wykorzystuje hybrydowy system, który składa się z głebokiej konwolucyjnej sieci neuronowej (Deep Convolutional Neural Network, CNN) i klasyfikatora bayesowskiego. Na początku wydobywa zdjęcia twarzy z obrazu przedstawiającego tłum lub grupę ludzi, a następnie przekazuje je do sieci neuronowej, która analizuje emocje na poszczególnych zdjęciach twarzy zwracając uśredniony wynik. Z kolei klasyfikator bayesowski wnioskuje o globalnej emocji związanej z obrazem, integrując wizualne cechy zawartości zdjęcia uzyskane za pomocą deskryptora sceny. Ostatecznie sieć neuronowa przekazuje swój wynik do klasyfikatora, a ten zwraca ostateczną decyzje odnośnie emocji panującej na zdjęciu.
+Celem pracy jest zaprojektowanie, zbudowanie i wyszkolenie sztucznej sieci neuronowej zdolnej do analizy emocji tłumów na podstawie zdjęć. Sieć ma być w stanie określić emocje panującą na fotografii przydzielając ją do jednej z trzech kategorii: emocji pozytywnych, neutralnych bądź negatywnych.
 
-\section{Przegląd literatury}
-Tutaj znajdą się pozycje ogólnie związane z implementacją konwolucyjnych sieci neuronowych.
+Praca składa się z siedmiu rozdziałów.
+Niniejszy wstęp stanowi rozdział \ref{chapter1}.
+W rozdziale \ref{chapter2}. zaprezentowano najważniejsze pojęcia z dziedziny uczenia maszynowego, których znajomość jest niezbędna podczas lektury niniejszej pracy. Ponadto, znajduje się tam przegląd literatury związanej z sieciami neuronowymi.
+W rozdziale \ref{chapter3}. szczegółowo przeanalizowano rozpatrywany problem, dokładnie sprecyzowano cele pracy, przedstawiono istniejące rozwiązania i opisano zastosowane podejścia do rozwiązania problemu.
+W rozdziale \ref{chapter4}. zaprezentowano informacje dotyczące bazy danych, jak również wyjaśniono, dlaczego właśnie ta baza została wybrana. Ponadto, omówiono architekturę konwolucyjnych sieci neuronowych, podstawy jej działa, oraz problemy, z jakimi należy się mierzyć, ze szczególnym naciskiem na problem nadmiernego dopasowania do danych treningowych. Z tego powodu omówiono również technikę augmentacji danych. Przeanalizowano też modele uprzednio trenowane, których wykorzystanie w procesie transfer learningu może wpłynąć pozytywnie na dokładność walidacji. Na koniec opisano architekturę aplikacji mającej na celu usprawnić proces trenowania sieci neuronowych oraz skryptu pozwalającego na wygodne wykorzystywanie wytrenowanej sieci w celu przewidywania emocji. 
+W rozdziale \ref{chapter5}. opisano technologie implementacji projektu: wybrany język programowania oraz frameworki. Przedstawiono architekturę stworzonej aplikacji i skryptu. Zaprezentowano implementacje modelu sieci neuronowej, sposób augmentacji danych i rozszerzenia modelu uprzednio trenowanego, wraz z przedstawieniem wyników analiz obrazów przeprowadzanych przez zaimplementowane modele.
+W rozdziale \ref{chapter6}. przedstawiono sposób instalacji i wdrożenia aplikacji w środowisku docelowym.
+Rozdział \ref{chapter7}. stanowi podsumowanie stanu zakończonych prac projektowych i implementacyjnych  wraz z potencjalnymi, dalszymi kierunkami ich rozwoju.

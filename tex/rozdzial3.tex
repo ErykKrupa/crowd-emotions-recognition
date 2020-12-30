@@ -1,101 +1,34 @@
-\chapter{Implementacja systemu}
+\chapter{Analiza problemu}
 \thispagestyle{chapterBeginStyle}
+\label{chapter3}
 
-\section{Opis technologii}
-Tutaj będzie opis technologii użytych przy implementacji systemu (Python, Keras).
 
-% Należy tutaj zamieścić krótki opis (z referencjami) do technologii użytych przy implementacji systemu.
+W tym rozdziale został przedstawiony problem analizy emocji na zdjęciach tłumów i grup ludzi, dotychczasowe podejścia do tego problemu, jak również podejście zastosowane w tej pracy.
 
-% {\color{dgray}
-% Do implementacji systemu użyto języka JAVA w wersji \ldots, szczegółowy opis można znaleźć w \cite{Java}. Interfejs zaprojektowano w oparciu o HTML5 i CSS3 \cite{HTML-CSS}.
-% }
 
-\section{Omówienie kodów źródłowych}
-Tutaj najważniejsze/ najciekawsze kody źródłowe i sygnatury metod publicznych.
+\section{Szczegółowe przedstawienie problemu}
+Celem pracy jest wytrenowania skutecznego modelu konwolucyjnej sieci neuronowej umożliwiającego klasyfikacje emocji dominującej wśród dużej grupy osób na podstawie obrazu, ze szczególnym naciskiem na to, by wytrenowany model był jak najlżejszy, a czas rozpoznawania emocji- jak najkrótszy. Tak skonstruowana, niewielka sieć może zostać bez problemów zapisana na urządzeniu mobilnym. Z kolei wysoka szybkość działania umożliwia analizę obrazu w czasie zbliżonym do czasu rzeczywistego. Obie te cechy pozwolą na stworzenie aplikacji mobilnej, która np. będzie robić zdjęcia za każdym razem, kiedy w kadrze zostaną rozpoznane emocje pozytywne.
 
-% {\color{dgray}
-% Kod źródłowy~\ref{ws} przedstawia opisy poszczególnych metod interfejsu: \texttt{WSPodmiotRejestracjaIF}. Kompletne
-% kody źródłowe znajdują się na płycie CD dołączonej do niniejszej pracy w katalogu \texttt{Kody} (patrz Dodatek~\ref{plytaCD}).
-% }
+Rozpoznawane emocje będą przypisywane do jednej z trzech grup: emocji pozytywnych, neutralnych i negatywnych. Domyślnym podejściem do podobnych problemów jest dzielenie ich na przynajmniej dwie części. Na początku trenowany się model będący w stanie wykrywać twarze na zdjęciach tłumów. Fragmenty obrazu zawierające twarze są następnie przekazywane do drugiego modelu odpowiedzialnego za rozpoznawanie emocji, który uśrednia je za pomocą konkretnego algorytmu. Takie podejście ma jednak oczywistą wadę, a mianowicie wykrywa się jedynie emocje wyrażone na twarzach, a pomija się te, które wynikają chociażby z mowy ciała. Z tego powodu często trenuje się jeszcze jeden model, mający na celu zbadać ogólne cechy danej sceny, tj. ocenić ogólny nastrój zdjęcia. Dopiero tą wartość łączy się z uśrednionymi emocjami twarzy i zwraca jako przewidywaną, ogólną emocje panującą na zdjęciu.
+ 
+ 
+\section{Analiza i porównanie istniejących rozwiązań}
+W kontekście rozpoznawania emocji na zdjęciach tłumów, a w szczególności w przypadku podziału tych emocji na trzy wyżej wymienione kategorie, wartą przytoczenia jest praca \cite{GAD}. Autorzy stworzyli zbiór Group Effect Database 3.0 (zobacz rozdział \ref{chapter4}), na którym przetestowali modele będące w istocie połączeniem modeli $BoW_{AU}$, $BoW_{LL}$, $Scene_{GIST}$ \cite{GIST} i $Scene_{CENTRIST}$ \cite{CENTRIST}.
 
-% \begin{small}
-% \begin{lstlisting}[language=Java, frame=lines, numberstyle=\tiny, stepnumber=5, caption=Interfejs usługi Web Service: \texttt{WSPodmiotRejestracjaIF}\label{ws}., firstnumber=1]
-% package erejestracja.podmiot;
-% import java.rmi.RemoteException;
-% // Interfejs web serwisu dotyczącego obsługi podmiotów i rejestracji.
-% public interface WSPodmiotRejestracjaIF extends java.rmi.Remote{
-% // Pokazuje informacje o danym podmiocie.
-% // parametr: nrPeselRegon - numer PESEL podmiotu lub numer REGON firmy.
-% // return: Podmiot - obiekt transportowy: informacje o danym podmiocie.
-% public Podmiot pokazPodmiot(long nrPeselRegon) throws RemoteException;
-% // Dodaje nowy podmiot.
-% // parametr: nowyPodmiot - obiekt transportowy: informacje o nowym podmiocie.
-% // return: true - jeśli podmiot dodano, false - jeśli nie dodano.
-% public boolean dodajPodmiot(Podmiot nowyPodmiot) throws RemoteException;
-% // Usuwa dany podmiot.
-% // parametr: nrPeselRegon - numer PESEL osoby fizycznej lub numer REGON firmy.
-% // return: true - jeśli podmiot usunięto, false - jeśli nie usunięto.
-% public boolean usunPodmiot(long nrPeselRegon) throws RemoteException;
-% // Modyfikuje dany podmiot.
-% // parametr: podmiot - obiekt transportowy: informacje o modyfikowanym podmiocie.
-% // return: true - jeśli podmiot zmodyfikowano, false - jeśli nie zmodyfikowano.
-% public boolean modyfikujPodmiot(Podmiot podmiot) throws RemoteException;
-% // Pokazuje zarejestrowane podmioty na dany dowód rejestracyjny.
-% // parametr: nrDowoduRejestracyjnego - numer dowodu rejestracyjnego.
-% // return: PodmiotRejestracja[] - tablica obiektów transportowych: informacje o
-% // wszystkich zarejestrowanych podmiotach.
-% public PodmiotRejestracja[] pokazZarejestrowanePodmioty(
-% String nrDowoduRejestracyjnego) throws RemoteException;
-% // Nowa rejestracja podmiotu na dany dowód rejestracyjny.
-% // parametr: nrDowoduRejestracyjnego - numer dowodu rejestracyjnego.
-% // parametr: nrPeselRegon - numer PESEL podmiotu lub numer REGON firmy.
-% // parametr: czyWlasciciel - czy dany podmiot jest właścicielem pojazdu.
-% // return: true - jeśli zarejestrowano podmiot, false - jeśli nie zarejestrowano.
-% public boolean zarejestrujNowyPodmiot(String nrDowoduRejestracyjnego,
-% long nrPeselRegon, boolean czyWlasciciel) throws RemoteException;
-% // Usuwa wiązanie pomiędzy danym podmiotem, a dowodem rejestracyjnym.
-% // parametr: nrDowoduRejestracyjnego - numer dowodu rejestracyjnego.
-% // parametr: nrPeselRegon - numer PESEL podmiotu lub numer REGON firmy.
-% // return: true - jeśli podmiot wyrejestrowano, false - jeśli nie wyrejestrowano.
-% public boolean wyrejestrujPodmiot(String nrDowoduRejestracyjnego,
-% long nrPeselRegon) throws RemoteException;
-% \end{lstlisting} 
-% \end{small}
+$BoW$ (Bag of Word) \cite{BoW} to reprezentacja, która opiera się na przypisywaniu słów do analizowanych danych, tworząc tym samym zbiór niepowiązanych ze sobą słów kluczowych.
+$BoW_{AU}$ analizuje napięcie mięśni twarzy, wykorzystując $BoW$ do przypisywania słów kluczowych do każdej twarzy na zdjęciu, tworząc w ten sposób zbiór słów związanych z mimiką, takich jak np. uśmiech, szczęście, itd.
+$BoW_{LL}$ wykrywa niskopoziomowe cechy zdjęć twarzy, takie jak np. krawędzie, nasycenie kolorów czy oświetlenie. 
+$Scene_{GIST}$ i $Scene_{CENTRIST}$ to w istocie deskryptory sceny- analizują cechy zdjęć nie związane z twarzami, ale z elementy otoczenia, takie jak wystrój scenerii, ale też np. ogólny sposób ubioru postaci na zdjęciu.
+Należy jeszcze dodać, że autorzy w łączeniu modeli wykorzystywali Multiple Kernel Learning ($MKL$) \cite{MKL}. 
 
-% {\color{dgray}
-% Kod źródłowy~\ref{req} przedstawia procedurę przetwarzającą żądanie. Hasz utrwalany \verb|%granulacja| wykorzystywany jest do komunikacji międzyprocesowej.
-% }
+Żaden z tych modeli nie zapewnia na walidacyjnym zbiorze danych dokładności wyższej niż 51\%. Jednakże ich połączenie pozwoliło na osiągnięcie zdecydowanie lepszych wyników. \cite{GAD} osiągnął najlepsze rezultaty (na poziomie 67.64\% na zbiorze walidacyjnym), łącząc $BoW_{AU}$, $BoW_{LL}$ i $Scene_{CENTRIST}$ za pomocą $MKL$. Na ten wynik złożyło się 83.72\% dokładności dla zdjęć emocji pozytywnych, 80\% dla emocji neutralnych i tylko 31.03\% dla emocji negatywnych. Biorąc pod uwagę, że zbiór zdjęć przedstawiających emocje negatywne w bazie Group Effect Database 3.0 jest najmniejszy, można pokusić się o wniosek, że taka architektura wręcz dopasowała się do zbioru, na którym była trenowa. 31.03\% ta wartość nawet niższa, niż przewidywana w przypadku zwracania wyników losowych dla klasyfikacji trójklasowej. Można więc wysnuć tezę, że podana architektura była w stanie poprawnie rozpoznawać tylko emocje pozytywne i neutralne.
 
-% \begin{small}
-% \begin{lstlisting}[language=perl, frame=lines, caption=Przetwarzanie żądania - procedura \texttt{process\_req()}\label{req}., firstnumber=86]
-% sub process_req(){	
-%   my($r) = @_;
-%   $wyn = "";
-%   if ($r=~/get/i) {
-% 	@reqest = split(" ",$r);
-% 	$zad = $reqest[0];
-% 	$ts1 = $reqest[1];
-% 	$ts2 = $reqest[2];
-% 	@date1 = split(/\D/,$ts1);
-% 	@date2 = split(/\D/,$ts2);
-% 	print "odebralem: $r"; 
-% 	$wyn = $wyn."zadanie: $zad\n";
-% 	$wyn = $wyn."czas_od: "."$date1[0]"."-"."$date1[1]"."-"."$date1[2]"."_"."$date1[3]".":"."$date1[4]".":"."$date1[5]"."\n";
-% 	$wyn = $wyn."czas_do: "."$date2[0]"."-"."$date2[1]"."-"."$date2[2]"."_"."$date2[3]".":"."$date2[4]".":"."$date2[5]"."\n";		
-% 	$wyn = $wyn.&sym_sens($ts1,$ts2);
-% 	return $wyn;
-%   }
-%   if ($r=~/set gt/i) {
-% 	@reqest = split(" ",$r);
-% 	$zad = $reqest[0];
-% 	$ts1 = $reqest[1];
-% 	$ts2 = $reqest[2];
-% 	$gt = $reqest[2];
-% 	dbmopen(%granulacja,"granulacja_baza",0644);
-% 	$granulacja{"gt"}=$gt;
-% 	dbmclose(%granulacja);
-% 	$wyn = "\'GT\' zmienione na: $gt";
-%   }		
-% }	
-% \end{lstlisting} 
-% \end{small}
+Inna zaprezentowana przez \cite{GAD} architektura, składająca się z $BoW_{AU}$, $BoW_{LL}$ i $Scene_{GIST}$ połączonych za pomocą $MKL$, uzyskała, co prawda, nieznacznie gorszą ostateczną dokładność (67.15\%), jednakże osiągając wynik na poziomie 50\% dla zdjęć emocji negatywnych.
+
+Kolejnym przykładem pracy poruszającej temat trójklasowej klasyfikacji w problemie rozpoznawania emocji tłumów jest \cite{SGarg}. Autor wykorzystuje hybrydowy system, który składa się z głębokich konwolucyjnych sieci neuronowych i klasyfikatora bayesowskiego. Na początku wydobywa zdjęcia twarzy z obrazu przedstawiającego tłum lub grupę ludzi, a następnie przekazuje je do sieci neuronowych, które analizują wyrażane emocje na poszczególnych zdjęciach twarzy zwracając uśredniony wynik. Jednocześnie, klasyfikator bayesowski wykorzystuje deskryptor sceny, by wydobyć ze zdjęcia wizualne cechy otoczenia, a następnie integruje je, przewidując globalną emocję związaną z obrazem. Na końcu sieci neuronowe przekazują rozpoznane emocje do klasyfikatora, a ten zwraca ostateczną, ogólną decyzje odnośnie emocji panującej na zdjęciu. Wykorzystując bazę zdjęć Group Affect Datebase 3.0 do trenowania powyższych modeli, \cite{SGarg} osiągnął wynik na poziomie 65.27\% dokładności na walidacyjnym zbiorze danych.
+
+
+\section{Zastosowane podejścia do rozwiązania problemu}
+Jednakże w tej pracy przetestowane zostaną nieco inne podejścia do tego problemu. Pierwszym z nich jest zaimplementowanie jednego model sieci neuronowej, który analizuje całe zdjęcie i określa dominującą na nim emocje. To podejście zostanie wsparte techniką augmentacji danych. Największą jego zaletą jest niewielka waga wytrenowanego modelu i krótki czas przetwarzania zdjęć. Umożliwi to wykorzystanie sieci w aplikacjach przeznaczonych na urządzenia mobilne, których celem jest analiza emocji panujących na zdjęciach w czasie zbliżonym do rzeczywistego. Kolejną zaletą tego podejścia jest konieczność zaimplementowania tylko jednego modelu, z jednoczesnym uwzględnienia zarówno emocji wypisanych na twarzach, tych wynikających z mowy ciała, jak i tych, na które wskazuje ubiór postaci czy otoczenie.
+
+Drugim zastosowanym podejściem jest wykorzystanie modeli wytrenowanych wcześniej (transfer learning) na innych, dużo większych i bardziej ogólnych zbiorach danych, w celu skorzystania z ich przestrzennej hierarchii cech w charakterze ogólnego modelu przetwarzania obrazu. Taką hierarchię można wykorzystać do rozpoznawania klas, do których sieć nie była wcześniej szkolona. Może to szczególnie zwiększyć wydajność modelu w przypadku problemów związanych ze zbytnim dopasowywaniem się sieci do zbioru treningowego.

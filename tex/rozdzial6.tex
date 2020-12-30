@@ -1,0 +1,50 @@
+\chapter{Instalacja i użytkowanie}
+\thispagestyle{chapterBeginStyle}
+\label{chapter6}
+
+
+\section{Instalacja}
+Do działania aplikacji wymagany jest interpreter języka Python. Kod źródłowy został napisany dla wersji 3.7, która wraz z innymi może zostać pobrana z \cite{PythonDownload} dla systemu Windows. W przypadku systemu Linux, interpreter Pythona w wersji 3.7 może zostać zainstalowany za pomocą polecenia:
+\begin{verbatim}
+    sudo apt install python3.7
+\end{verbatim}
+
+Po zainstalowaniu Pythona należy pobrać kody źródłowe aplikacji, po czym przejść do jej folderu głównego. Tam za pomocą poniższego polecenia należy utworzyć folder o nazwie venv, zawierający środowisko wirtualne:
+\begin{verbatim}
+    Windows: python -m venv venv
+    Linux: python3 -m venv venv
+\end{verbatim}
+Przed każdym rozpoczęciem pracy z aplikacją należy aktywować środowisko wirtualne:
+\begin{verbatim}
+    Windows: venv\Scripts\activate.bat
+    Linux: source venv/bin/activate
+\end{verbatim}
+W tym momencie w terminalu przed ścieżką do aktualnego katalogu powinien pojawić się $(venv)$. Od tego momentu polecenia \verb|python| i \verb|pip| (dla systemu Windows) oraz \verb|python3| i \verb|pip3| (dla systemu Linux) będą korzystały ze środowiska wirtualnego. Jeśli zostało one aktywowane po raz pierwszy, należy zainstalować wszystkie niezbędne biblioteki i zależności wymagane przez aplikacje za pomocą polecenia:
+\begin{verbatim}
+    Windows: pip install -r requirements.txt
+    Linux: pip3 install -r requirements.txt
+\end{verbatim}
+W przypadku posiadania procesora graficznego, zamiast \verb|requirements.txt| można skorzystać również z \verb|requirements-gpu.txt|, w celu zainstalowania biblioteki TensorFlow w wersji, która pozwala na obsługę GPU. W tym przypadku niezbędne jest również zainstalowanie sterowników NVIDIA cuDNN, które można pobrać z \cite{cuDNN}. Po wykonaniu wszystkich powyższych poleceń aplikacja jest gotowa do pracy.
+
+
+\section{Użytkowanie}
+W każdej nowej sesji terminala należy aktywować środowisko wirtualne przed pierwszym uruchomieniem zarówno aplikacji do trenowania sieci neuronowych, jak i skryptu do rozpoznawania emocji. Można to zrobić za pomocą polecenia:
+\begin{verbatim}
+    Windows: venv\Scripts\activate.bat
+    Linux: source venv/bin/activate
+\end{verbatim}
+
+Aplikację do trenowania sieci można uruchomić za pomocą:
+\begin{verbatim}
+    Windows: python src\train_main.py
+    Linux: python3 src/train_main.py
+\end{verbatim}
+Nie przyjmuje ona żadnych argumentów. Zamiast tego, jest sterowana za pomocą pliku konfiguracyjnego 
+\verb|train_config.json|. Wszystkie parametry tego pliku, jak również sposób działa aplikacji, zostały szczegółowo opisane w rozdziale \ref{chapter5}.
+
+Skrypt rozpoznający emocje można uruchomić za pomocą:
+\begin{verbatim}
+    Windows: python src\predict_main.py path1 path2 path3...
+    Linux: python3 src/predict_main.py path1 path2 path3...
+\end{verbatim}
+Przyjmuje on dowolną dodatnią liczbę argumentów, która przechowuje ścieżki do plików i folderów zawierających zdjęcia w formacie .jpg, które mają zostać poddane analizie. Pozostałe parametry skryptu można konfigurować za pomocą pliku \verb|predict_config.json|. Zostały one szczegółowo opisane w rozdziale \ref{chapter5}, wraz ze sposobem działania i możliwościami skryptu.
