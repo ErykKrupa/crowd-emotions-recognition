@@ -43,9 +43,9 @@ if not images:
     print('No correct paths have been found', file=stderr)
     exit(1)
 
-log('Loading model...')
+log(f'Loading model {config.get("model_path")}...')
 model = load_model(config.get('model_path'), compile=False)
-log(f'Model {config.get("model_path")} loaded')
+log('Model loaded')
 
 log('Preparing data...')
 input_arr = [img_to_array(load_img(i, target_size=model.inputs[0].shape[1:3])) for i in images]

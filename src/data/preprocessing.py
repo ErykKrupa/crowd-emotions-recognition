@@ -13,12 +13,13 @@ RESCALE = 1. / 255
 def get_train_generator() -> DirectoryIterator:
     if not config.get('data_augmentation'):
         return _get_generator(DataSet.TRAIN)
+    brightness_range = config.get('brightness_range')
     data_generator: ImageDataGenerator = ImageDataGenerator(
         rescale=RESCALE,
         rotation_range=config.get('rotation_range'),
         width_shift_range=config.get('width_shift_range'),
         height_shift_range=config.get('height_shift_range'),
-        shear_range=config.get('shear_range'),
+        brightness_range=[1 - brightness_range, 1 + brightness_range],
         zoom_range=config.get('zoom_range'),
         horizontal_flip=config.get('horizontal_flip'),
         vertical_flip=config.get('vertical_flip'),

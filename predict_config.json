@@ -1,5 +1,5 @@
 {
-  "model_path": "models/Model_20-12-03_02-01-01-vgg16.h5",
+  "model_path": "models/example.h5",
   "output_file": null,
   "verbose": false,
 

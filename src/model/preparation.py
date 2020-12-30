@@ -12,19 +12,11 @@ def prepare_whole_model() -> Model:
 
     model = models.Sequential()
     model.add(Conv2D(32, kernel_shape, activation=activation, input_shape=config.get('input_shape')))
-    model.add(Conv2D(32, kernel_shape, activation=activation))
-    model.add(Conv2D(32, kernel_shape, activation=activation))
     model.add(MaxPooling2D(pool_shape))
-    model.add(Conv2D(64, kernel_shape, activation=activation))
-    model.add(Conv2D(64, kernel_shape, activation=activation))
     model.add(Conv2D(64, kernel_shape, activation=activation))
     model.add(MaxPooling2D(pool_shape))
     model.add(Conv2D(128, kernel_shape, activation=activation))
-    model.add(Conv2D(128, kernel_shape, activation=activation))
-    model.add(Conv2D(128, kernel_shape, activation=activation))
     model.add(MaxPooling2D(pool_shape))
-    model.add(Conv2D(128, kernel_shape, activation=activation))
-    model.add(Conv2D(128, kernel_shape, activation=activation))
     model.add(Conv2D(128, kernel_shape, activation=activation))
     model.add(MaxPooling2D(pool_shape))
     model.add(Flatten())
@@ -37,7 +29,8 @@ def prepare_whole_model() -> Model:
 
 def prepare_end_of_model(input_dim: int) -> Model:
     model = models.Sequential()
-    model.add(Dense(1024, activation=config.get('activation'), input_dim=input_dim))
+    model.add(Dense(512, activation=config.get('activation'), input_dim=input_dim))
+    model.add(Dense(512, activation=config.get('activation')))
     model.add(Dropout(config.get('dropout_rate')))
     model.add(Dense(3, activation='softmax'))
     _finish(model)
@@ -52,7 +45,8 @@ def _finish(model: Model) -> None:
 
 
 def _compile(model: Model) -> None:
+    optimizer = getattr(optimizers, config.get('optimizer'))
     model.compile(loss='categorical_crossentropy',
-                  optimizer=optimizers.Adam(lr=config.get('optimizer_learning_rate')),
+                  optimizer=optimizer(lr=config.get('optimizer_learning_rate')),
                   metrics=['acc'])
 

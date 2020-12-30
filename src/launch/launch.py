@@ -13,7 +13,7 @@ from keras.callbacks import History
 from data.data_set import DataSet
 from data.preprocessing import get_amount_of_pictures, get_train_generator, get_validation_generator
 from data.pretrained_preprocessing import extract_features, get_pretrained
-from launch.merge_models import merge
+from utils.utils import merge
 from model.preparation import prepare_whole_model, prepare_end_of_model
 from model.saving import save_model, save_results
 from model.visualization import visualize
