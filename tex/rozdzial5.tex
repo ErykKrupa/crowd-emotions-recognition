@@ -11,12 +11,12 @@ W projekcie wykorzystano język Python 3 \cite{Python}. Python jest interpretowa
 
 Jednym z nich jest framework Keras \cite{Keras}, który został wykorzystany do zaimplementowania modelu sieci neuronowej. Zdecydowano się na ten wybór ze względu na prostotę jego nauki i użytkowania, ale też z uwagi na to, że jest to framework powszechnie używany, co ułatwia wyszukiwanie potrzebnych informacji w internecie. Keras sam w sobie zapewnia tylko wysokopoziomowy interfejs służący do tworzenia modeli uczenia głębokiego. Pakiet ten nie implementuje żadnych niskopoziomowych operacji, takich jak przeprowadzanie działań na tensorach czy różniczkowanie. W tych kwestiach polega na wyspecjalizowanych i silnie zoptymalizowanych bibliotekach obsługujących tensory. Autorzy Keras nie wybrali do tego celu jednej konkretnej biblioteki, tym samym wiążąc z nią implementacje pakietu. Zamiast tego, problem ten został rozwiązany modułowo, a więc Keras może użyć jednej z kilku bibliotek jako swojego silnika bazowego. Są to na przykład TensorFlow od Google \cite{TensorFlow}, Theano \cite{Theano} czy Microsoft Cognitive Toolkit (CNTK) \cite{CNTK}. Kod napisany w Keras może być uruchomiony na dowolnej platformie wybranej spośród tych trzech, bez żadnej modyfikacji. Platformę można zmienić w dowolnym momencie pracy, co przydaje się, gdy któraś z nich okazuję się szybsza podczas rozwiązywania problemu.
 
-W projekcie skorzystano z TensorFlow, czyli biblioteki opensource wspierającej trenowanie głębokich sieci neuronowych. TensorFlow pozwala na korzystanie z możliwości nie tylko procesorów CPU, ale też GPU. W tym pierwszym przypadku obudowuje niskopoziomową bibliotekę operacji tensorowych Eigen \cite{Eigen}, natomiast w przypadku procesorów graficznych, TensorFlow stanowi interfejs dla wysoce zoptymalizowanej biblioteki uczenia głębokiego NVIDIA CUDA Deep Neural Network (cuDNN) \cite{cuDNN}.
+W projekcie skorzystano z TensorFlow, czyli biblioteki opensource wspierającej trenowanie głębokich sieci neuronowych. TensorFlow pozwala na korzystanie z możliwości nie tylko procesorów CPU, ale też GPU. W tym pierwszym przypadku obudowuje niskopoziomową bibliotekę operacji tensorowych Eigen \cite{Eigen}, natomiast w przypadku procesorów graficznych, TensorFlow stanowi interfejs dla wysoce zoptymalizowanej biblioteki uczenia głębokiego Nvidia CUDA Deep Neural Network (cuDNN) \cite{cuDNN}.
 
-Kod uczenia głębokiego, z uwagi na ogrom operacji przeprowadzanych na tensorach, wykonuje się zdecydowanie szybciej na procesorach graficznych. Jest to szczególnie zauważalne  w przypadku trenowania konwolucyjnych sieci neuronowych. Podczas pracy nad projektem, przejście z CPU Intel Core i5-7300HQ 2.50GHz na procesor graficzny NVIDIA GeForce MX150 pozwoliło na skrócenia czasu trenowania modeli od 6 do 10 razy. Z tego powodu instalacja cuDNN jest zdecydowanie zalecana w przypadku dłuższej pracy z aplikacją.
+Kod uczenia głębokiego, z uwagi na ogrom operacji przeprowadzanych na tensorach, wykonuje się zdecydowanie szybciej na procesorach graficznych. Jest to szczególnie zauważalne  w przypadku trenowania konwolucyjnych sieci neuronowych. Podczas pracy nad projektem, przejście z CPU Intel Core i5-7300HQ 2.50GHz na procesor graficzny Nvidia GeForce MX150 pozwoliło na skrócenia czasu trenowania modeli od 6 do 10 razy. Z tego powodu instalacja cuDNN jest zdecydowanie zalecana w przypadku dłuższej pracy z aplikacją.
 
 
-\section{Implementacja aplikacji}
+\section{Implementacja}
 \subsection{Aplikacja do trenowania sieci}
 W celu możliwie jak największego ułatwienia i zautomatyzowania procesu trenowania sieci neuronowych została stworzona aplikacja w języku Python z wykorzystaniem frameworka Keras. Implementacja została oparta w głównej mierze na paradygmacie funkcyjnym, ale wykorzystuje również paradygmat obiektowy. Aplikacja zawiera plik konfiguracyjny \verb|train_config.json| odpowiedzialny za sterowanie nią i procesem trenowania sieci. We wspomnianym pliku należy wyspecyfikować następujące parametry:
 \begin{itemize}
@@ -238,7 +238,7 @@ W tym przypadku zwiększenie liczby filtrów pomogło w niektórych konfiguracja
 \section{Augmentacja danych}
 Kolejny etap ulepszania modeli opiera się na wykorzystaniu augmentacji danych. W rozdziale \ref{chapter4}. zostały opisane modyfikacje obrazów, które zostaną zastosowane w celu wzbogacania zbioru zdjęć. Z uwagi na zdecydowanie większą ilość czasu potrzebną do trenowania sieci z wykorzystaniem tej techniki, testy zostaną przeprowadzone na tych modelach, które w poprzednim podrozdziale uzyskały najlepszą dokładność na walidacyjnym zbiorze danych.
 
-W pierwszym teście augmentacja zostanie przeprowadzona z następującymi argumentami opisanymi na początku tego rozdziału: rotation\_range = 40, width\_shift = 0.2, height\_shift = 0.2, brightness\_range = 0.2, zoom\_range = 0.2, horizontal\_flip = true, vertical\_flip = false, fill\_mode =,,nearest'' i dropout\_rate = 0.5. Jest to często wykorzystywana konfiguracja. Tabela \ref{tab:5.7} przestawia porównanie wydajności sieci, które w poprzednim rozdziale dawały najlepsze wyniki, tym razem trenowane w 80 iteracjach z wykorzystaniem augmentacji i bez niej. Wszystkie z testowanych modeli przetwarzały zdjęcia w rozmiarze 150x150 i używały optymalizatora Adam.
+W pierwszym teście augmentacja zostanie przeprowadzona z następującymi argumentami opisanymi na początku tego rozdziału: rotation\_range = 40, width\_shift = 0.2, height\_shift = 0.2, brightness\_range = 0.2, zoom\_range = 0.2, horizontal\_flip = true, vertical\_flip = false, fill\_mode =,,nearest'' i dropout\_rate = 0.5. Jest to często wykorzystywana konfiguracja. Tabela \ref{tab:5.7} przestawia porównanie wydajności sieci, które w poprzednim podrozdziale dawały najlepsze wyniki, tym razem trenowane w 80 iteracjach z wykorzystaniem augmentacji i bez niej. Wszystkie z testowanych modeli przetwarzały zdjęcia w rozmiarze 150x150 i używały optymalizatora Adam.
 \begin{table}[H]
   \centering
   \caption{Dokładności osiągnięte po 80 iteracjach trenowania dla modeli, które osiągnęły najlepsze rezultaty bez augmentacji danych}
@@ -401,11 +401,11 @@ W kolejnym podejściu zmodyfikowano architekturę gęsto połączonego klasyfika
     \hline
     Sieć & RMSProp($2\cdot10^{-4}$) & Adam($2\cdot10^{-3}$) \\
     \hline
-    MobileNetV2 & 59.65\% & 58.46\% \\ 
-    MobileNet & 56.68\% & 56.51\% \\ 
-    VGG16 & \textbf{62.26\%} & N/A \\
-    Xception & N/A & 58.53\% \\ 
-    ResNet50 & \textbf{62.53\%} & 59.39\% \\ 
+    MobileNetV2 & 59.7\% & 58.5\% \\ 
+    MobileNet & 56.7\% & 56.5\% \\ 
+    VGG16 & \textbf{62.3\%} & N/A \\
+    Xception & N/A & 58.5\% \\ 
+    ResNet50 & \textbf{62.5\%} & 59.4\% \\ 
     \hline
     \end{tabular}
   \label{tab:5.13}
@@ -429,12 +429,12 @@ Kolejne testy skupiały się na różnych próbach modyfikacji gęsto połączon
     \hline
     Modyfikacja & VGG16 & ResNet50 \\
     \hline
-    Funkcja aktywacji tanh & 49.88\% & 41.27\% \\ 
-    Jedna wartwa 2048 neuronów & 61.21\% & 61.34\% \\ 
-    Dwie wartwy po 1024 neuronów & \textbf{62.55\%} & \textbf{62.84\%} \\ 
-    Dwie wartwy po 512 neuronów & \textbf{62.95\%} & \textbf{63.56\%} \\
-    Learning rate- $2\cdot10^{-3}$ & 52.07\% & 54.87\% \\
-    Learning rate- $2\cdot10^{-5}$ & \textbf{62.73\%} & 62.19\% \\
+    Funkcja aktywacji tanh & 49.9\% & 41.3\% \\ 
+    Jedna wartwa 2048 neuronów & 61.2\% & 61.3\% \\ 
+    Dwie wartwy po 1024 neuronów & \textbf{62.6\%} & \textbf{62.8\%} \\ 
+    Dwie wartwy po 512 neuronów & \textbf{63\%} & \textbf{63.6\%} \\
+    Learning rate- $2\cdot10^{-3}$ & 52.1\% & 54.9\% \\
+    Learning rate- $2\cdot10^{-5}$ & \textbf{62.7\%} & 62.2\% \\
     \hline
     \end{tabular}
   \label{tab:5.14}
@@ -442,7 +442,7 @@ Kolejne testy skupiały się na różnych próbach modyfikacji gęsto połączon
 
 Najlepszy wynik osiągnął model ResNet50 dla dwóch warstw złożonych z 512 neuronów, zdecydowanie przekraczając 63\%. Ogólne wyniki wskazują na to, że dodanie kolejnej wartwy gęsto połączonego klasyfikatora może pozytywnie wpłynąć na wydajność modelu, szczególnie, jeśli nowo dodana wartwa nie jest zbyt szeroka. Ponadto, dla modelu VGG16 zauważono wzrost wydajności w przypadku zastosowania optymalizatora o niższym learning rate, choć liczba iteracji potrzebnych do osiągnięcia takich wyników wynosi wtedy około 2-3 razy więcej, niż dla pozostałych rozpatrywanych przypadków.
 
-Z tego powodu, w kolejnym teście użyto modelu VGG16 zakończonego gęsto połączonym klasyfikatorem o dwóch wartwach po 512 neuronów, z optymalizatorem RMSProp o learning rate wynoszącym $2\cdot10^{-5}$. Model osiągnął wydajność na poziomie \textbf{63.38\%}, a historię jego trenowania przedstawiono na wykresie \ref{pic:5.7}. Wynika z niego, że 40 iteracji nie było potrzebnych, ponieważ model osiągnął pełną wydajność już w połowie treningu. Sieć ResNet50 z poprzedniego testu wykorzystująca taki sam klasyfikator, ale z learning rate wynoszącym $2\cdot10^{-4}$, uzyskała wynik lepszy o 0.18 p.p., jednakże, składa się ona aż z 50 013 699 możliwych do trenowania parametrów. Dla porównania, model VGG16 jest zbudowany tylko z 19 173 699 parametrów. Ponadto, ResNet50 to sieć na tyle duża, że do przeprowadzania pojedynczej sekwencji obliczeń, nawet dla bardzo małego wsadu danych, potrzebna jest pamięć większa niż ta, jaką jest w stanie zapewnić karta graficzna Nvidia GeForce MX150. Z tego powodu obliczenia musiały być wykonywane na CPU, co w połączeniu z dużą większą liczbą parametrów koniecznych do wytrenowania sprawiło, że trening dla modelu ResNet50 zajmował około 35-40 razy więcej czasu, niż w przypadku VGG16.
+Z tego powodu, w kolejnym teście użyto modelu VGG16 zakończonego gęsto połączonym klasyfikatorem o dwóch wartwach po 512 neuronów, z optymalizatorem RMSProp o learning rate wynoszącym $2\cdot10^{-5}$. Model osiągnął wydajność na poziomie \textbf{63.4\%}, a historię jego trenowania przedstawiono na wykresie \ref{pic:5.7}. Wynika z niego, że 40 iteracji nie było potrzebnych, ponieważ model osiągnął pełną wydajność już w połowie treningu. Sieć ResNet50 z poprzedniego testu wykorzystująca taki sam klasyfikator, ale z learning rate wynoszącym $2\cdot10^{-4}$, uzyskała wynik lepszy o 0.2 p.p., jednakże, składa się ona aż z 50 013 699 możliwych do trenowania parametrów. Dla porównania, model VGG16 jest zbudowany tylko z 19 173 699 parametrów. Ponadto, ResNet50 to sieć na tyle duża, że do przeprowadzania pojedynczej sekwencji obliczeń, nawet dla bardzo małego wsadu danych, potrzebna jest pamięć większa niż ta, jaką jest w stanie zapewnić karta graficzna Nvidia GeForce MX150. Z tego powodu obliczenia musiały być wykonywane na CPU, co w połączeniu z dużą większą liczbą parametrów koniecznych do wytrenowania sprawiło, że trening dla modelu ResNet50 zajmował około 35-40 razy więcej czasu, niż w przypadku VGG16.
 
 \begin{figure}[H]
     \caption{Historia dokładności w trakcie 40 iteracji uczenia dla modelu VGG16 zakończonego dwiema wartwami gęstymi}
@@ -453,4 +453,4 @@ Z tego powodu, w kolejnym teście użyto modelu VGG16 zakończonego gęsto poł�
 
 Niewielki rozmiar sieci VGG16 niesie ze sobą jeszcze jedną zaletę. Cały model oparty na tej bazie konwolucyjnej, wraz z wytrenowanym gęstym klasyfikatorem, po zapisaniu na dysku waży 73.1 MB. W przypadku modelu ResNet50 jest to około 2.6 razy więcej- 191 MB. Wykorzystanie mniejszego modelu skraca czas jego ładowania z dysku oraz pozwala na szybszą klasyfikację- obie te zalety mają bardzo duże znaczenie dla użytkownika końcowego. Niewielka waga modelu potencjalnie pozwala na wykorzystanie go na więcej sposobów. Dla przykładu, model o takim rozmiarze może być bez większych problemów zainstalowany na urządzeniu mobilnym- czyli sprzęcie, na którym możliwość rozpoznawania emocji na zdjęciach jest wyjątkowo pożądana z perspektywy użytkownika komercyjnego.
 
-Podsumowując, ze wszystkich przedstawionych podejść do rozwiązania problemu, najskuteczniejszym i zapewniającym największą dokładność okazało się wykorzystanie transfer learningu. Mimo tego, że uzyskane sieci zajmują więcej miejsca na dysku, to oba te wyniki, zarówno \textbf{63.38\%} dla VGG16, jak i \textbf{63.56\%} dla ResNet50 można uznać za bardzo dobre, biorąc pod uwagę fakt, że większe, bardziej skomplikowane modele trenowane przez \cite{GAD} osiągały niewiele wyższą wydajność na zbiorze walidacyjnym. 
+Podsumowując, ze wszystkich przedstawionych podejść do rozwiązania problemu, najskuteczniejszym i zapewniającym największą dokładność okazało się wykorzystanie transfer learningu. Mimo tego, że uzyskane sieci zajmują więcej miejsca na dysku, to oba te wyniki, zarówno \textbf{63.4\%} dla VGG16, jak i \textbf{63.6\%} dla ResNet50 można uznać za bardzo dobre, biorąc pod uwagę fakt, że większe, bardziej skomplikowane modele trenowane przez \cite{GAD} osiągały niewiele wyższą wydajność na zbiorze walidacyjnym. 

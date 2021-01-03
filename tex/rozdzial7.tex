@@ -2,14 +2,42 @@
 \thispagestyle{chapterBeginStyle}
 \label{chapter7}
 
-Informacje o stanie zakończonych prac projektowych i implementacyjnych
 
-Co się udało, co nie, dlaczego?
+\section{Podsumowanie prac}
+Celem pracy było zaprojektowanie, zbudowanie i wyszkolenie sztucznej sieci neuronowej zdolnej do analizy emocji tłumów na podstawie zdjęć. Sieć miała być w stanie rozpoznawać emocję panującą na fotografii, przydzielając ją do jednej z trzech kategorii: emocji pozytywnych, neutralnych bądź negatywnych. Prócz maksymalizacji dokładności przewidywań, nacisk został również położony na szybkie działanie modelu i utrzymywanie go w jak najmniejszym rozmiarze, by umożliwić wykorzystywanie go na urządzeniach mobilnych.
 
-Co było głównym wyzwaniem, jak mu podołano
+By zautomatyzować proces trenowania sieci neuronowych, została napisana aplikacja w języku Python, która buduje i trenuje modele na podstawie wartości zdefiniowanych przez użytkownika w pliku konfiguracyjnym. Powstała ona w odpowiedzi na największe wyzwanie napotkane podczas pracy nad projektem, jakim była konieczność wytrenowania dużej liczby sieci, w celu znalezienia tej dającej najlepsze rezultaty. Dzięki tej aplikacji można w wygodny sposób zakolejkować do trenowania wiele modeli o różnej konfiguracji, na koniec uzyskując wyniki w przystępnej formie, wraz z wykresami historii trenowania.
+Powstał też skrypt, również sterowany za pomocą pliku konfiguracyjnego, za pomocą którego można uruchomić model, przekazać do niego zdjęcia i otrzymać wyniki w wygodnej formie.
+Testy zostały przeprowadzane dla modeli budowanych i trenowanych na 3 różne sposoby: z wykorzystaniem augmentacji danych, bez niej, oraz z wykorzystaniem transfer learningu. Wyniki testów zostały zgromadzone i przedstawione w niniejszym dokumencie (rozdział \ref{chapter5}). 
+Podsumowując, udało się wykonać wszystkie zaplanowane na początku pracy czynności.
 
-Podsumowanie powstałych sieci
 
-Podsumowanie testów, wyników, wniosków, dokładne liczby
+\section{Podsumowanie wyników}
+Z pośród modeli powstałych podczas treningu na zbiorze Group Affect Database 3.0 (opisanym w rozdziale \ref{chapter4}) na największą uwagę zasługują sieci podsumowane w tabeli \ref{tab:7.1}. Najmniejszy model osiągający zadowalające rezultaty (wynik wyższy niż 50\% na walidacyjnym zbiorze danych) został wytrenowany z użyciem augmentacji danych. Jest to model przetwarzający zdjęcia w rozmiarze 150x150 pikseli. Składa się on z czterech par warstw, z których każda złożona jest z warstwy konwolucyjnej o pewnej liczbie filtrów i funkcji aktywacji ReLU oraz warstwy max pooling. Liczby filtrów w każdej następnej warstwie konwolucyjnej wynoszą odpowiednio 32, 64, 128 i 128. Każda z nich wykorzystuje jądra o standardowym rozmiarze równym 3x3. Każda z warstw max pooling również jest sparametryzowana w standardowy sposób, to znaczy używa okien konwolucyjnych o rozmiarze 2x2 i przesuwa je z krokiem równym 2. Do sieci została jeszcze dopięta warstwa porzucenia o współczynniku równym 0.5 oraz dwie warstwy gęste, wewnętrzna o 512 neuronach z funkcją ReLU i wyjściowa o 3 neuronach, korzystająca z funkcji softmax. Sieć wykorzystuje optymalizator Adam z learning rate wynoszącym $10^{-4}$. Jako funkcja straty została wykorzystana kategorialna entropia krzyżowa. Model był trenowany z użyciem następującej konfiguracji augmentacji danych: rotation\_range = 40, width\_shift = 0.2, height\_shift = 0.2, brightness\_range = 0.2, zoom\_range = 0.2, horizontal\_flip = true, vertical\_flip = false oraz fill\_mode =„reflect”. Wydajność na poziomie \textbf{55.5\%} została osiągnięta po 200 iteracjach treningu. Ta sieć charakteryzuje się szybkim przetwarzaniem zdjęć i najmniejszym w tym zestawieniu rozmiarem, co może przydać się w przypadku wykorzystania tego modelu na urządzeniach mobilnych.
 
-Dalsze możliwe kierunki rozwoju
+Sieć, która osiągnąła największą wydajność, została zbudowana z wykorzystaniem uprzednio trenowanego modelu ResNet50, analizującego zdjęcia w rozmiarze 150x150 pikseli. Została zakończona gęsto połączonym klasyfikatorem składającym się z wartwy porzucenia o współczynniku 0.5, dwóch warstw po 512 neuronów, wykorzystujących funkcję aktywacji ReLU, oraz ostatniej warstwie o 3 neuronach z funkcją aktywacji softmax. Używając optymalizatora RMSProp z learning rate wynoszącym $2\cdot10^{-4}$ oraz kategorialnej entropii krzyżowej w charakterze funkcji straty, model ten osiągnął dokładność na poziomie \textbf{63.6\%}. Jest to najwyższa wydajność osiągnięta w tych testach, jednakże duża wielkość modelu (191 MB) może uniemożliwić wykorzystanie go na wszystkich typach urządzeń. Znajdzie on jednak zastosowanie wszędzie tam, gdzie szybkość działania sieci nie jest kluczowym czynnikiem.
+
+Model, który zdaje się stanowić złoty środek pomiędzy wydajnością, a ilością zajmowanego miejsca na dysku, został zbudowany z wykorzystaniem uprzednio trenowanej sieci VGG16. Pozostała część jego architektury nie różni się niczym od tej wykorzystanej dla modelu ResNet50, w wyjątkiem użycia learning rate równego $2\cdot10^{-5}$. Sieć osiągnęła wydajność na poziomie \textbf{63.4\%}, co jest wynikiem lepszym o 7.9 p.p. od tego osiągniętego przez najlepszy model wykorzystujący augmentacje danych, a jednocześnie waży 117.9 MB mniej niż sieć oparta na ResNet50. Z tego powodu, ten model zdaje się oferować najszerszy zakres potencjalnych możliwości wykorzystania, oferując zarówno wysoką wydajność jak i niski czas przetwarzania zdjęć.
+
+\begin{table}[H]
+  \centering
+  \caption{Najlepsze wytrenowane sieci}
+    \begin{tabular}{ |c|c|c| }
+    \hline
+    Sieć & Dokładność & Waga \\
+    \hline
+    Augmentacja & 55.5\% & \textbf{39.5 MB} \\
+    ResNet50 & \textbf{63.6\%} & 191 MB \\
+    VGG16 & 63.4\% & 73.1 MB \\ 
+    \hline
+    \end{tabular}
+  \label{tab:7.1}
+\end{table}
+
+Dotychczas, najlepsze rezultaty na wyżej wspomnianej bazie danych zostały osiągnięte przez jej autorów. \cite{GAD} osiągnął wyniki na poziomie 67.64\% na zbiorze walidacyjnym, łącząc $BoW_{AU}$, $BoW_{LL}$ i $Scene_{CENTRIST}$ za pomocą $MKL$ (patrz rozdział \ref{chapter3}). Ta sieć faworyzowała jednak emocje pozytywne i neutralne, ponieważ były to najczęściej udzielane przez nią odpowiedzi. Inna zaprezentowana przez autorów architektura, składająca się z $BoW_{AU}$, $BoW_{LL}$ i $Scene_{GIST}$ połączonych za pomocą $MKL$ uzyskała, co prawda, nieznacznie gorszą ostateczną dokładność (67.15\%), ale jednocześnie osiągając porównywalne wyniki na każdym podzbiorze danych.
+
+
+\section{Dalsze kroki}
+Kolejnym krokiem w rozwoju napisanej aplikacji może być dodanie wizualizacji pośrednich danych wyjściowych, tj. mapy cech, która jest generowana przez różne konkretne funkcje aktywacji warstw konwolucyjnych na podstawie danych wejściowych. Oprócz tego, można wizualizować również mapy ciepła, czyli te miejsca na zdjęciu, które najbardziej przyczyniły się do tego, że dany obraz został przypisany do tej, a nie innej kategorii. Obie te funkcjonalności pozwoliłyby lepiej zrozumieć co dzieje się wewnątrz sieci i być może, dzięki temu, wytrenować lepszy model.
+
+Same modele, z uwagi na niewielki rozmiar, mogą być wykorzystywane na urządzeniach mobilnych, a więc z tego powodu kolejnym krokiem może być stworzenie aplikacji na tę platformę, która np. robiłaby zdjęcie za każdym razem, kiedy rozpoznałaby, że w kadrze dominują pozytywne emocje. Podobna aplikacja rozpoznająca emocje w czasie rzeczywistym mogłaby zostać wykorzystana np. podczas koncertów czy innych wydarzeń rozrywkowych. Umożliwiłoby to wykrywanie momentów wydarzenia, które były najbardziej angażujące dla publiki. 
