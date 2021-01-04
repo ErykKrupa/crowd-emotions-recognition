@@ -58,7 +58,7 @@ Nim aplikacja zbuduje sieć neuronową, przeprowadzana jest wstępna obróbka da
 W pierwszym przypadku aplikacja wykorzysta dane z odpowiedniej ścieżki, uprzednio te dane augmentując lub nie, w zależności od ustawień obiektu konfiguracyjnego. W drugim przypadku wykorzysta ścieżkę do zcachowanych danych, a jeśli tej ścieżki nie odnajdzie, lub nie odnajdzie cacha zapisanego dla tej konkretnej bazy konwolucyjnej i sposobu preprocessingu danych, skorzysta ze ścieżki do bazy celem stworzenia odpowiedniego cacha.
 W pakiecie \verb|data| w pliku \verb|emotion.py| znajduje się klasa \verb|Emotion|, reprezentująca jedną z trzech emocji. W tym samym pakiecie można znaleźć plik \verb|data_set.py|, w którym znajduje się klasa \verb|DataSet|, reprezentująca jeden z trzech zbiorów danych w bazie zdjęć.
 
-W pakiecie \verb|model|, na podstawie architektury wyspecyfikowanej w pliku \verb|preparation.py| oraz przy użyciu obiektu konfiguracyjnego, przygotowywana jest sieć neuronowa. Po stworzeniu i wytrenowaniu tegoż modelu, zostaje on zapisany na dysku w formacie .h5. Oprócz tego, w plikach z rozszerzeniem \verb|.npy| zapisywana jest również historia dokładności osiąganych podczas trenowania. Za obie powyższe funkcjonalności odpowiedzialne są metody znajdujące się w pliku \verb|saving.py| w pakiecie \verb|model|, wykorzystujące obiekt konfiguracyjny (odpowiednio parametry \verb|models_directory| i \verb|results_directory|) w celu zapisywania w żądanej przez użytkownika ścieżce. W tym samym pakiecie znajduje się również plik \verb|visualization.py|, dzięki któremu wyświetlane są wykresy prezentujące dokładność i stratę w kolejnych iteracjach treningu, zarówno dla zbioru walidacyjnego, jak i treningowego,.
+W pakiecie \verb|model|, na podstawie architektury wyspecyfikowanej w pliku \verb|preparation.py| oraz przy użyciu obiektu konfiguracyjnego, przygotowywana jest sieć neuronowa. Po stworzeniu i wytrenowaniu tegoż modelu, zostaje on zapisany na dysku w formacie .h5. Oprócz tego, w plikach z rozszerzeniem \verb|.npy| zapisywana jest również historia dokładności osiąganych podczas trenowania. Za obie powyższe funkcjonalności odpowiedzialne są metody znajdujące się w pliku \verb|saving.py| w pakiecie \verb|model|, wykorzystujące obiekt konfiguracyjny (odpowiednio parametry \verb|models_directory| i \verb|results_directory|) w celu zapisywania w żądanej przez użytkownika ścieżce. W tym samym pakiecie znajduje się również plik \verb|visualization.py|, dzięki któremu wyświetlane są wykresy prezentujące dokładność i stratę w kolejnych iteracjach treningu, zarówno dla zbioru walidacyjnego, jak i treningowego.
 
 Ponadto, w pakiecie \verb|utils| znajduje się plik \verb|utils.py|, w którym przechowywane są użyteczne metody wykorzystywane w innych miejscach aplikacji. W tym samym pakiecie tworzony jest też obiekt klasy \verb|Logger|, znajdującej się w pliku \verb|logger.py|. Obiekt ten, podobnie jak obiekt klasy \verb|Config|, jest dostępny w całej aplikacji, ale wykorzystywany jest do informowania użytkownika o aktualnym statusie i akcjach podejmowanych przez aplikacje. Z uwagi na to, że niektóre akcje mogą być czasochłonne, świadomość aktualnego stanu aplikacji pozwoli użytkownikowi uniknąć wrażenia, że aplikacja przestała odpowiadać. Ponadto, w konsoli wypisywana jest też architektura modelu i ostrzeżenia związane z przepełnianiem się pamięci karty graficznej. Wszystkie wyżej wymienione typy logów mogą być wyłączone za pomocą pliku konfiguracyjnego.
 
@@ -75,16 +75,20 @@ Użytkownik podczas uruchomienia skryptu może przekazać mu ścieżki do plikó
 
 
 \section{Model konwolucyjnej sieci neuronowej}
-Pierwszym zastosowanym podejściem jest zaimplementowanie od podstaw własnej konwolucyjnej sieci neuronowej i sprawdzenie, jakie wyniki jest ona w stanie osiągnąć. Przygotowywanie danych do pierwszych testów rozpoczęto od modyfikowania rozdzielczości zdjęć w taki sposób, żeby wszystkie były rozmiaru 150x150 pikseli. Obrazy podczas preprocessingu często sprowadza się do tej rozdzielczości z racji tego, że często okazuje się ona być złotym środkiem pomiędzy jakością obrazu, a jego wielkością (czyli jednocześnie ilością danych jakie model musi przetworzyć). Taka rozdzielczość pozwala dość dokładnie określić co dzieje się na zdjęciu, np. człowiek nie ma żadnych problemów z rozpoznawaniem szczegółów na obrazie w takiej rozdzielczości. Jednocześnie zdjęcie składające się z większej liczny pikseli przekłada się na większy tensor, jaki musi być przetworzony przez pierwszą warstwę. Z kolei większy tensor wchodzący do pierwszej warstwy oznacza z reguły (jest to też zależne od architektury sieci), że kolejne tensory również będą większe, co w konsekwencji ogólnie przełoży się na większą liczba parametrów do dostrojenia dla danej sieci. Wydłuża to czas treningu, lecz co gorsza sprawia, że model waży zdecydowanie więcej. Jest to niepożądane w przypadku modeli wykorzystywanych na urządzeniach nie dysponujących dużą ilością miejsca na dysku, jak np. urządzenia mobilne. Z perspektywy użytkownika końcowego taka sieć nie dość, że zajmuje więcej miejsca na dysku, to również dłużej się wczytuje i potrzebuje więcej czasu na przetwarzanie zdjęć. Ponadto, w zbyt dużych sieciach często dochodzi do zjawiska nadmiernego dopasowywania się modelu do danych wejściowych.
+Pierwszym zastosowanym podejściem jest zaimplementowanie od podstaw własnej konwolucyjnej sieci neuronowej i sprawdzenie, jakie wyniki jest ona w stanie osiągnąć. Przygotowywanie danych do pierwszych testów rozpoczęto od modyfikowania rozdzielczości zdjęć w taki sposób, żeby wszystkie były rozmiaru 150x150 pikseli. Obrazy podczas preprocessingu często sprowadza się do tej rozdzielczości z racji tego, że często okazuje się ona być złotym środkiem pomiędzy jakością obrazu, a jego wielkością (czyli jednocześnie ilością danych jakie model musi przetworzyć). Taka rozdzielczość pozwala dość dokładnie określić co dzieje się na zdjęciu, np. człowiek nie ma żadnych problemów z rozpoznawaniem szczegółów na obrazie w takiej rozdzielczości. Jednocześnie zdjęcie składające się z większej liczny pikseli przekłada się na większy tensor, jaki musi być przetworzony przez pierwszą warstwę. Z kolei większy tensor wchodzący do pierwszej warstwy oznacza z reguły (jest to też zależne od architektury sieci), że kolejne tensory również będą większe.
+%JL, co w konsekwencji ogólnie przełoży się na większą liczba parametrów do dostrojenia dla danej sieci. 
+Wydłuża to czas treningu, a także czas działania modelu. Jest to zdecydowanie niepożądane w przypadku modeli wykorzystywanych na urządzeniach 
+o ograniczonych zasobach,  jak np. urządzenia mobilne.
+%JL, lecz co gorsza sprawia, że model waży zdecydowanie więcej. Jest to niepożądane w przypadku modeli wykorzystywanych na urządzeniach nie dysponujących dużą ilością miejsca na dysku, jak np. urządzenia mobilne. Z perspektywy użytkownika końcowego taka sieć nie dość, że zajmuje więcej miejsca na dysku, to również dłużej się wczytuje i potrzebuje więcej czasu na przetwarzanie zdjęć. Ponadto, w zbyt dużych sieciach często dochodzi do zjawiska nadmiernego dopasowywania się modelu do danych wejściowych.
 
-Do pierwszego testu wykorzystano architekturę sieci składającą się z czterech bloków, w której każdy blok stanowi parę złożoną z dwóch warstw- warstwy konwolucyjnej o pewnej liczbie filtrów i pewnej funkcji aktywacji oraz warstwy max pooling. Liczby filtrów w każdej następnej warstwie konwolucyjnej wynoszą odpowiednio 32, 64, 128 i 128. Celem takiej zwężającej się, ale coraz głębszej architektury jest ułatwienie sieci tworzenia hierarchii wzorców przestrzennych (patrz rozdział (\ref{chapter4}). Każda z warstw konwolucyjnych wykorzystuje jądra o standardowym rozmiarze równym 3x3. Każda z warstw max pooling równiej jest sparametryzowana w standardowy sposób, to znaczy używa okien konwolucyjnych o rozmiarze 2x2 i przesuwa je z krokiem równym 2. Można łatwo obliczyć, że ostatnia warstwa w tak zbudowanej bazie konwolucyjnej ma rozmiar (7, 7, 128). Do niej zostały dopięte jeszcze dwie warstwy gęste, wewnętrzna o 512 neuronach i wyjściowa o 3 neuronach reprezentujących 3 klasy wyjściowe. Z uwagi na to, że rozwiązywany jest problem klasyfikacji wieloklasowej, gdzie każdy obraz przypisywany jest do dokładnie jednej klasy, ostatnia warstwa korzysta z funkcji softmax, dzięki czemu suma wartości wyjściowych na tych trzech neuronach wynosi 1, co może być interpretowane jako prawdopodobieństwo, stopień pewności sieci o przynależności rozpatrywanego zdjęcia do danej klasy. Jako funkcja straty została wykorzystana kategorialna entropia krzyżowa.
+Do pierwszego testu wykorzystano architekturę sieci składającą się z czterech bloków, w której każdy blok stanowi parę złożoną z dwóch warstw - warstwy konwolucyjnej o pewnej liczbie filtrów i pewnej funkcji aktywacji oraz warstwy max pooling. Liczby filtrów w każdej następnej warstwie konwolucyjnej wynoszą odpowiednio 32, 64, 128 i 128. Celem takiej zwężającej się, ale coraz głębszej architektury jest ułatwienie sieci tworzenia hierarchii wzorców przestrzennych (patrz rozdział (\ref{chapter4}). Każda z warstw konwolucyjnych wykorzystuje jądra o standardowym rozmiarze równym 3x3. Każda z warstw max pooling również jest sparametryzowana w standardowy sposób, to znaczy używa okien konwolucyjnych o rozmiarze 2x2 i przesuwa je z krokiem równym 2. Można łatwo obliczyć, że ostatnia warstwa w tak zbudowanej bazie konwolucyjnej ma rozmiar (7, 7, 128). Do niej zostały dopięte jeszcze dwie warstwy gęste, wewnętrzna o 512 neuronach i wyjściowa o 3 neuronach reprezentujących 3 klasy wyjściowe. Z uwagi na to, że rozwiązywany jest problem klasyfikacji wieloklasowej, gdzie każdy obraz przypisywany jest do dokładnie jednej klasy, ostatnia warstwa korzysta z funkcji softmax, dzięki czemu suma wartości wyjściowych na tych trzech neuronach wynosi 1, co może być interpretowane jako prawdopodobieństwo, stopień pewności sieci o przynależności rozpatrywanego zdjęcia do danej klasy. Jako funkcja straty została wykorzystana kategorialna entropia krzyżowa.
 
-Przeprowadzono 8 testów, z wykorzystaniem 4 różnych funkcji aktywacji: ReLU, tangensa hiperbolicznego (tanh), sigmoid i softmax. Dla każdej z tych funkcji model został skompilowany dwa razy za pomocą dwóch różnych optymalizatorów: RMSProp i Adam, oba parametryzowane learning rate równym $10^{-4}$. RMSProp (Root Mean Square Propagation) został wybrany z uwagi na to, że jest to optymalizator często wykorzystywany w problemach klasyfikacji obrazów. Przewagą Adam (Adaptive Moment Estimation) z kolei jest to, że charakteryzuje się on krótszym czasem osiągania konkretnych wyników, jednakże w niektórych problemach klasyfikacji obrazów może nie być w stanie osiągnąć rozwiązania optymalnego.
+Przeprowadzono 8 testów, z wykorzystaniem 4 różnych funkcji aktywacji: ReLU, tangensa hiperbolicznego (tanh), sigmoid i softmax. Dla każdej z tych funkcji model został skompilowany dwa razy za pomocą dwóch różnych optymalizatorów: RMSProp i Adam, oba parametryzowane learning rate równym $10^{-4}$. RMSProp (Root Mean Square Propagation) został wybrany z uwagi na to, że jest to optymalizator często wykorzystywany w problemach klasyfikacji obrazów. Przewagą Adam (Adaptive Moment Estimation) z kolei jest to, że charakteryzuje się on krótszym czasem osiągania dobrych wyników, jednakże w niektórych problemach klasyfikacji obrazów może nie być w stanie osiągnąć rozwiązania optymalnego.
 
 Dokładności osiągnięte przez sieci na walidacyjnym zbiorze danych po 15 iteracjach trenowania zostały przedstawione w tabeli \ref{tab:5.1}.
 
 \begin{table}[H]
-  \caption{Dokładności osiągnięte po 15 iteracjach trenowania dla opisywanego modelu przetwarzającego zdjęcia w rozmiarze 150x150}
+  \caption{Dokładności osiągnięte po 15 iteracjach trenowania dla opisywanego modelu przetwarzającego zdjęcia w rozmiarze 150x150.}
     \centering
     \begin{tabular}{ |c|c|c| }
     \hline
@@ -99,16 +103,16 @@ Dokładności osiągnięte przez sieci na walidacyjnym zbiorze danych po 15 iter
   \label{tab:5.1}
 \end{table}
 
-W tabeli \ref{tab:5.1} pogrubioną czcionką zaznaczono wyniki wyraźnie lepsze od reszty. Już po pierwszym rzucie oka nasuwa się pytanie- dlaczego zdecydowana większość sieci osiągnęła identyczne lub niemal identyczne wyniki, w okolicach 40.2\%? Wykresy przedstawiające historie dokładności osiąganej na walidacyjnym zbiorze danych (przykład dla funkcji sigmoid i optymalizatora ADAM przedstawiono na wykresie \ref{pic:5.1}) wskazują na to, że większość z tych sieci osiągnęła tę wydajność już po pierwszej lub drugiej iteracji. Natomiast w przypadku zbioru testowego sieci z reguły bardzo szybko osiągały wyniki na poziomie 40.5\%. Przyjrzenie się bazie danych pokazuje, że liczba zdjęć przedstawiających emocje pozytywne w zbiorze walidacyjnym wynosi 40.2\% wszystkich zdjęć w tym zbiorze, natomiast w przypadku zbioru treningowego analogiczna wartość wynosi 40.5\% (zobacz rozdział \ref{chapter4}). W obu przypadkach jest to podzbiór większy od podzbiorów zdjęć emocji neutralnych czy negatywnych. Sugeruje to więc, że sieci wpadały w swego rodzaju lokalne maksima, zawsze zakładając, że na zdjęciu wyrażone są emocje pozytywne, ponieważ podczas treningu właśnie taka odpowiedź miała największe szanse na bycie odpowiedzią poprawną.
+W tabeli \ref{tab:5.1} pogrubioną czcionką zaznaczono wyniki wyraźnie lepsze od reszty. Już po pierwszym rzucie oka nasuwa się pytanie - dlaczego zdecydowana większość sieci osiągnęła identyczne lub niemal identyczne wyniki, w okolicach 40.2\%? Wykresy przedstawiające historie dokładności osiąganej na walidacyjnym zbiorze danych (przykład dla funkcji sigmoid i optymalizatora ADAM przedstawiono na wykresie \ref{pic:5.1}) wskazują na to, że większość z tych sieci osiągnęła tę wydajność już po pierwszej lub drugiej iteracji. Natomiast w przypadku zbioru testowego sieci z reguły bardzo szybko osiągały wyniki na poziomie 40.5\%. Przyjrzenie się bazie danych pokazuje, że liczba zdjęć przedstawiających emocje pozytywne w zbiorze walidacyjnym wynosi 40.2\% wszystkich zdjęć w tym zbiorze, natomiast w przypadku zbioru treningowego analogiczna wartość wynosi 40.5\% (zobacz rozdział \ref{chapter4}). W obu przypadkach jest to podzbiór większy od podzbiorów zdjęć emocji neutralnych czy negatywnych. Sugeruje to więc, że sieci wpadały w swego rodzaju lokalne maksima, zawsze zakładając, że na zdjęciu wyrażone są emocje pozytywne, ponieważ podczas treningu właśnie taka odpowiedź miała największe szanse na bycie odpowiedzią poprawną.
 
 \begin{figure}[H]
-    \caption{Historia wydajności przy zastosowaniu funkcji aktywacji sigmoid i optymalizatora Adam}
+    \caption{Historia wydajności przy zastosowaniu funkcji aktywacji sigmoid i optymalizatora Adam.}
     \centering
     \includegraphics[width=0.7\textwidth]{wykres1.png}
     \label{pic:5.1}
 \end{figure}
 
-Po uruchomieniu tych sieci i przekazaniu do klasyfikacji całego zbioru testowego oraz walidacyjnego okazało się to prawdą- sieci niemal w każdym przypadku rozpoznawały emocje pozytywną. Co więcej, nierzadko robiły to z niemal stuprocentową pewnością. Sieci utykały więc w lokalnym maksimum.
+Po uruchomieniu tych sieci i przekazaniu do klasyfikacji całego zbioru testowego oraz walidacyjnego okazało się to prawdą - sieci niemal w każdym przypadku rozpoznawały emocje pozytywną. Co więcej, nierzadko robiły to z niemal stuprocentową pewnością. Sieci utykały więc w lokalnym maksimum.
 
 Dalsze testy z wykorzystaniem optymalizatora RMSProp nie dały lepszych wyników- niezależnie od wybranej funkcji aktywacji i niezależnie od wykorzystanego learning rate (który przyjmował wartości od $10^{-1}$ do $10^{-7}$), wszystkie sieci z użyciem tego optymalizatora uzyskały wyniki równe 40.2\% lub nawet gorsze (w przypadku najniższych learning rate). Podobnie rzecz miała się w przypadku optymalizatora Adam w połączeniu z funkcjami aktywacji sigmoid lub softmax, żaden test nie wykazał przekroczenia ,,granicy'' 40.2\%.
 
@@ -116,7 +120,7 @@ Jednak połączenie optymalizatora Adam z funkcjami aktywacji ReLu i tanh zasłu
 
 \begin{table}[H]
   \centering
-  \caption{Dokładności osiągnięte po 15 iteracjach trenowania dla modelu kompilowanego z użyciem optymalizatora Adam}
+  \caption{Dokładności osiągnięte po 15 iteracjach trenowania dla modelu kompilowanego z użyciem optymalizatora Adam.}
     \begin{tabular}{ |c|c|c| }
     \hline
     Learning rate & ReLU & Tanh \\
@@ -232,7 +236,7 @@ Przed wykonaniem testów z wykorzystaniem augmentacji danych, zostaną jeszcze p
   \label{tab:5.6}
 \end{table}
 
-W tym przypadku zwiększenie liczby filtrów pomogło w niektórych konfiguracjach- widać to wyraźnie dla funkcji aktywacji ReLU i learning rate o wartości $10^{-5}$. Wydajność w tym przypadku dla modelu B wzrosła o 1.6 p.p., jednakże jest on cięższy, bo waży aż 117 MB, co w zasadzie wyklucza go z dalszych rozważań. W pozostałych przypadkach modele B i C w większości osiągnęły wyniki porównywalne do tych osiągniętych przez model wyjściowy, ale z uwagi na, że są zdecydowanie cięższe (model C waży aż 136 MB) nie będą dalej rozważane. Z kolei modele o mniejszej głębokości warstw radziły sobie widocznie słabiej, najwidoczniej mała liczba filtrów nie pozwoliła wykształcić tak dobrej przestrzennej hierarchii cech.
+W tym przypadku zwiększenie liczby filtrów pomogło w niektórych konfiguracjach- widać to wyraźnie dla funkcji aktywacji ReLU i learning rate o wartości $10^{-5}$. Wydajność w tym przypadku dla modelu B wzrosła o 1.6 p.p., jednakże jest on cięższy, bo waży aż 117 MB, co w zasadzie wyklucza go z dalszych rozważań. W pozostałych przypadkach modele B i C w większości osiągnęły wyniki porównywalne do tych osiągniętych przez model wyjściowy, ale z uwagi na, że są zdecydowanie cięższe (model C waży aż 136 MB) nie będą dalej rozważane. Z kolei modele o mniejszej głębokości warstw radziły sobie widocznie słabiej, najwidoczniej mała liczba filtrów nie pozwoliła wykształcić tak dobrej hierarchii cech.
 
 
 \section{Augmentacja danych}
@@ -257,7 +261,7 @@ W pierwszym teście augmentacja zostanie przeprowadzona z następującymi argume
 
 Zgodnie z oczekiwaniami, augmentacja danych poprawiła wydajność w przypadku każdej sieci, jednak na szczególną uwagę zasługuje tutaj sieć wykorzystująca funkcję ReLU w charakterze funkcji aktywacji. W tym przypadku wydajność osiągnęła 54.8\% na walidacyjnym zbiorze danych, co jest najlepszym wynikiem do tej pory. W stosunku do tego samego modelu nie wykorzystującego augmentacji danych, wydajność poprawiła się o 9.6 p.p, czyli aż o 21\% w skali względnej. Historię trenowania tej sieci przedstawiono na wykresie \ref{pic:5.4}. 
 \begin{figure}[H]
-    \caption{Historia wydajności przy zastosowaniu funkcji aktywacji ReLU i augmentacji danych}
+    \caption{Historia wydajności przy zastosowaniu funkcji aktywacji ReLU i augmentacji danych.}
     \centering
     \includegraphics[width=0.7\textwidth]{wykres4.png}
     \label{pic:5.4}
@@ -270,7 +274,7 @@ Z tego powodu, w kolejnych testach zostaną wzięte pod uwagę inne modele wykor
 
 \begin{table}[H]
   \centering
-  \caption{Dokładności osiągnięte po 80 iteracjach trenowania z wykorzystaniem różnych wartości współczynnika porzucenia}
+  \caption{Dokładności osiągnięte po 80 iteracjach trenowania z wykorzystaniem różnych wartości współczynnika porzucenia.}
     \begin{tabular}{ |c|c|c|c|c|c|c|c| }
     \hline
     \multirow{2}{*}{F. akt.} & \multirow{2}{*}{L. rate} & \multirow{2}{*}{Model} & \multirow{2}{*}{Rozmiar} & \multirow{2}{*}{Bez aug.} & \multicolumn{3}{c|}{Z augmentacją} \\
@@ -293,7 +297,7 @@ W ostatnim teście została użyta sieć, która do tej pory osiągała najlepsz
 
 \begin{table}[H]
   \centering
-  \caption{Dokładności osiągnięte po 80 iteracjach trenowania z wykorzystaniem różnych współczynników augmentacji}
+  \caption{Dokładności osiągnięte po 80 iteracjach trenowania z wykorzystaniem różnych współczynników augmentacji.}
     \begin{tabular}{ |c|c|c|c|c|c|c|c| }
     \hline
     rotation\_r. & width\_s. & height\_s. & brightness\_r. & zoom\_r. & horizontal\_f. & fill\_m. & Dokładność \\
@@ -324,7 +328,7 @@ Tabela \ref{tab:5.10} przestawia szczegółowe wyniki osiągnięte przez tą sie
 
 \begin{table}[H]
   \centering
-  \caption{Liczba rozpoznanych emocji dla konkretnych podzbiorów zdjęć}
+  \caption{Liczba rozpoznanych emocji dla konkretnych podzbiorów zdjęć.}
     \begin{tabular}{ |cc|ccc|c| }
     \hline
     \multicolumn{2}{|c|}{\multirow{2}{*}{Liczba zdjęć: 4346}} & \multicolumn{3}{c|}{Przewidywania} & \multirow{2}{*}{Suma} \\
@@ -342,7 +346,7 @@ Tabela \ref{tab:5.10} przestawia szczegółowe wyniki osiągnięte przez tą sie
 
 \begin{table}[H]
   \centering
-  \caption{Procentowy stosunek rozpoznanych emocji dla konkretnych podzbiorów danych}
+  \caption{Procentowy stosunek rozpoznanych emocji dla konkretnych podzbiorów danych.}
     \begin{tabular}{ |cc|ccc|c| }
     \hline
     && \multicolumn{3}{c|}{Przewidywania} & \multirow{2}{*}{Suma} \\
@@ -396,7 +400,7 @@ W kolejnym podejściu zmodyfikowano architekturę gęsto połączonego klasyfika
 
 \begin{table}[H]
   \centering
-  \caption{Wyniki osiągnięte przez najlepsze modele wykorzystujące transfer learning}
+  \caption{Wyniki osiągnięte przez najlepsze modele wykorzystujące transfer learning.}
     \begin{tabular}{ |c|c|c| }
     \hline
     Sieć & RMSProp($2\cdot10^{-4}$) & Adam($2\cdot10^{-3}$) \\
@@ -424,7 +428,7 @@ Kolejne testy skupiały się na różnych próbach modyfikacji gęsto połączon
 
 \begin{table}[H]
   \centering
-  \caption{Wyniki osiągnięte poprzez różne wybrane modyfikacja modelu z optymalizatorem RMSProp}
+  \caption{Wyniki osiągnięte poprzez różne wybrane modyfikacja modelu z optymalizatorem RMSProp.}
     \begin{tabular}{ |c|c|c| }
     \hline
     Modyfikacja & VGG16 & ResNet50 \\
@@ -440,17 +444,17 @@ Kolejne testy skupiały się na różnych próbach modyfikacji gęsto połączon
   \label{tab:5.14}
 \end{table}
 
-Najlepszy wynik osiągnął model ResNet50 dla dwóch warstw złożonych z 512 neuronów, zdecydowanie przekraczając 63\%. Ogólne wyniki wskazują na to, że dodanie kolejnej wartwy gęsto połączonego klasyfikatora może pozytywnie wpłynąć na wydajność modelu, szczególnie, jeśli nowo dodana wartwa nie jest zbyt szeroka. Ponadto, dla modelu VGG16 zauważono wzrost wydajności w przypadku zastosowania optymalizatora o niższym learning rate, choć liczba iteracji potrzebnych do osiągnięcia takich wyników wynosi wtedy około 2-3 razy więcej, niż dla pozostałych rozpatrywanych przypadków.
+Najlepszy wynik osiągnął model ResNet50 dla dwóch warstw złożonych z 512 neuronów, zdecydowanie przekraczając 63\%. Ogólne wyniki wskazują na to, że dodanie kolejnej wartwy gęsto połączonego klasyfikatora może pozytywnie wpłynąć na wydajność modelu, szczególnie, jeśli nowo dodana warstwa nie jest zbyt szeroka. Ponadto, dla modelu VGG16 zauważono wzrost wydajności w przypadku zastosowania optymalizatora o niższym learning rate, choć liczba iteracji potrzebnych do osiągnięcia takich wyników wynosi wtedy około 2-3 razy więcej, niż dla pozostałych rozpatrywanych przypadków.
 
-Z tego powodu, w kolejnym teście użyto modelu VGG16 zakończonego gęsto połączonym klasyfikatorem o dwóch wartwach po 512 neuronów, z optymalizatorem RMSProp o learning rate wynoszącym $2\cdot10^{-5}$. Model osiągnął wydajność na poziomie \textbf{63.4\%}, a historię jego trenowania przedstawiono na wykresie \ref{pic:5.7}. Wynika z niego, że 40 iteracji nie było potrzebnych, ponieważ model osiągnął pełną wydajność już w połowie treningu. Sieć ResNet50 z poprzedniego testu wykorzystująca taki sam klasyfikator, ale z learning rate wynoszącym $2\cdot10^{-4}$, uzyskała wynik lepszy o 0.2 p.p., jednakże, składa się ona aż z 50 013 699 możliwych do trenowania parametrów. Dla porównania, model VGG16 jest zbudowany tylko z 19 173 699 parametrów. Ponadto, ResNet50 to sieć na tyle duża, że do przeprowadzania pojedynczej sekwencji obliczeń, nawet dla bardzo małego wsadu danych, potrzebna jest pamięć większa niż ta, jaką jest w stanie zapewnić karta graficzna Nvidia GeForce MX150. Z tego powodu obliczenia musiały być wykonywane na CPU, co w połączeniu z dużą większą liczbą parametrów koniecznych do wytrenowania sprawiło, że trening dla modelu ResNet50 zajmował około 35-40 razy więcej czasu, niż w przypadku VGG16.
+Z tego powodu, w kolejnym teście użyto modelu VGG16 zakończonego gęsto połączonym klasyfikatorem o dwóch warstwach po 512 neuronów, z optymalizatorem RMSProp o learning rate wynoszącym $2\cdot10^{-5}$. Model osiągnął wydajność na poziomie \textbf{63.4\%}, a historię jego trenowania przedstawiono na wykresie \ref{pic:5.7}. Wynika z niego, że 40 iteracji nie było potrzebnych, ponieważ model osiągnął pełną wydajność już w połowie treningu. Sieć ResNet50 z poprzedniego testu wykorzystująca taki sam klasyfikator, ale z learning rate wynoszącym $2\cdot10^{-4}$, uzyskała wynik lepszy o 0.2 p.p., jednakże, składa się ona aż z 50 013 699 możliwych do trenowania parametrów. Dla porównania, model VGG16 jest zbudowany tylko z 19 173 699 parametrów. Ponadto, ResNet50 to sieć na tyle duża, że do przeprowadzania pojedynczej sekwencji obliczeń, nawet dla bardzo małego wsadu danych, potrzebna jest pamięć większa niż ta, jaką jest w stanie zapewnić karta graficzna Nvidia GeForce MX150. Z tego powodu obliczenia musiały być wykonywane na CPU, co w połączeniu z dużą większą liczbą parametrów koniecznych do wytrenowania sprawiło, że trening dla modelu ResNet50 zajmował około 35-40 razy więcej czasu, niż w przypadku VGG16.
 
 \begin{figure}[H]
-    \caption{Historia dokładności w trakcie 40 iteracji uczenia dla modelu VGG16 zakończonego dwiema wartwami gęstymi}
+    \caption{Historia dokładności w trakcie 40 iteracji uczenia dla modelu VGG16 zakończonego dwiema warstwami gęstymi.}
     \centering
     \includegraphics[width=0.7\textwidth]{wykres7.png}
     \label{pic:5.7}
 \end{figure}
 
-Niewielki rozmiar sieci VGG16 niesie ze sobą jeszcze jedną zaletę. Cały model oparty na tej bazie konwolucyjnej, wraz z wytrenowanym gęstym klasyfikatorem, po zapisaniu na dysku waży 73.1 MB. W przypadku modelu ResNet50 jest to około 2.6 razy więcej- 191 MB. Wykorzystanie mniejszego modelu skraca czas jego ładowania z dysku oraz pozwala na szybszą klasyfikację- obie te zalety mają bardzo duże znaczenie dla użytkownika końcowego. Niewielka waga modelu potencjalnie pozwala na wykorzystanie go na więcej sposobów. Dla przykładu, model o takim rozmiarze może być bez większych problemów zainstalowany na urządzeniu mobilnym- czyli sprzęcie, na którym możliwość rozpoznawania emocji na zdjęciach jest wyjątkowo pożądana z perspektywy użytkownika komercyjnego.
+Niewielki rozmiar sieci VGG16 niesie ze sobą jeszcze jedną zaletę. Cały model oparty na tej bazie konwolucyjnej, wraz z wytrenowanym gęstym klasyfikatorem, po zapisaniu na dysku waży 73.1 MB. W przypadku modelu ResNet50 jest to około 2.6 razy więcej- 191 MB. Wykorzystanie mniejszego modelu skraca czas jego ładowania z dysku oraz pozwala na szybszą klasyfikację- obie te zalety mają bardzo duże znaczenie dla użytkownika końcowego. Niewielka waga modelu potencjalnie pozwala na wykorzystanie go na więcej sposobów. Dla przykładu, model o takim rozmiarze może być bez większych problemów zainstalowany na urządzeniu mobilnym- czyli sprzęcie, na którym możliwość rozpoznawania emocji na zdjęciach jest wyjątkowo pożądana z perspektywy użytkownika. %jl komercyjnego.
 
 Podsumowując, ze wszystkich przedstawionych podejść do rozwiązania problemu, najskuteczniejszym i zapewniającym największą dokładność okazało się wykorzystanie transfer learningu. Mimo tego, że uzyskane sieci zajmują więcej miejsca na dysku, to oba te wyniki, zarówno \textbf{63.4\%} dla VGG16, jak i \textbf{63.6\%} dla ResNet50 można uznać za bardzo dobre, biorąc pod uwagę fakt, że większe, bardziej skomplikowane modele trenowane przez \cite{GAD} osiągały niewiele wyższą wydajność na zbiorze walidacyjnym. 
